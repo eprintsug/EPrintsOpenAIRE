@@ -1,7 +1,9 @@
 # EPrintsOpenAIRE
 Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digital repository software
 
-## Configuration settings:
+## Configuration settings
+
+### Optional OpenAIRE OAI-PMH Custom Set Definition
 
 Optionally, a repository may wish to define a specific OAI "custom set" for OpenAIRE to harvest from.  For example, if you only want a portion of the item_types to be harvested, and/or you want to limit the harvesting to unembargoed items, you would define a custom set using something like this:
 
