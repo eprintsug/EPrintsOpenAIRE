@@ -1,5 +1,9 @@
 # EPrintsOpenAIRE
-Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digital repository software
+Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digital repository software.
+
+## Documentation
+
+The metadata guidelines: https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/
 
 ## Configuration settings
 
