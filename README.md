@@ -3,7 +3,9 @@ Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digi
 
 ## Documentation
 
-The metadata guidelines: https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/
+The metadata guidelines: 
+* https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/
+* https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/application_profile.html
 
 ## Configuration settings
 
