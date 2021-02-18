@@ -323,6 +323,7 @@ sub xml_dataobj
 	
 	
 	#Add rights/license info - based on JSON-LD export plugin work
+	#Only the "rights label" is exported for now, future versions will export license details for each file
 	my %rightsList;
     my %jsonldata;
 
@@ -338,14 +339,14 @@ sub xml_dataobj
 		$rightsLabel = "open access";
 	}
 	
-	
+	#go through documents, determine "rightsLabel" to be open access, embargoed, restricted or metadata only
+	#store more detailed license information regarding the files based on JSON-LD plugin, but current version of OpenAIRE export plugin doesn't output that yet
 	foreach my $doc ( @docs ) {
 	
-		
 		my %docrights;
 		my ($license_uri,$license_phrase);	
 		
-		my $license = "term_access"; #default for all documents is Spectrum Terms of Access
+		my $license = "term_access"; #default for all documents is [LOCAL REPOSITORY] Terms of Access
 		if ($doc->exists_and_set("license")){$license = $doc->get_value("license");}
 		
 		#$docrights{'license_phrase'}="";
@@ -367,7 +368,6 @@ sub xml_dataobj
 			}
 		}
 
-		
 		#$docrights{'license_phrase'}=$license_phrase; #Google doesn't recognize license_phrase, so add it to license field
 		$docrights{'contentUrl'}=$doc->get_url;
 		$docrights{'license'}= $license_uri." ".$license_phrase; #merge license-URI with license name and embargo information
@@ -375,32 +375,20 @@ sub xml_dataobj
 		$docrights{'encodingFormat'}=$doc->get_type;
 		if ($doc->exists_and_set("mime_type")) {$docrights{'encodingFormat'}=$doc->value("mime_type");}
 	
-		
 		push @{$jsonldata{distribution}}, \%docrights;
 		
-		
-		}
-		my %reporights;
-		#$reporights{'@type'}="";
-		$reporights{'name'}="";
-		$reporights{'url'}="";
-		
-		$reporights{'name'}=$repo->phrase("licenses_typename_term_access");
-		$reporights{'url'}=$repo->phrase("licenses_uri_term_access");
-		$reporights{'@type'}="CreativeWork";
-	
-	
-		# map type URI from OPENAIRE https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_accessrights.html
-	 my %type_map_rightsuri = (
-	 "open access" => "http://purl.org/coar/access_right/c_abf2",
-	 "embargoed access" => "http://purl.org/coar/access_right/c_f1cf",
- 	 "restricted access" => "http://purl.org/coar/access_right/c_16ec",
- 	 "metadata only access" => "http://purl.org/coar/access_right/c_14cb",
-	 );
+	}
+
+	# map type URI from OPENAIRE https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_accessrights.html
+	my %type_map_rightsuri = (
+	"open access" => "http://purl.org/coar/access_right/c_abf2",
+	"embargoed access" => "http://purl.org/coar/access_right/c_f1cf",
+	"restricted access" => "http://purl.org/coar/access_right/c_16ec",
+	"metadata only access" => "http://purl.org/coar/access_right/c_14cb",
+	);
 	
 	#map from labels to URIs
 	my $mapped_rights_URI = (exists $type_map_rightsuri{$rightsLabel}) ? $type_map_rightsuri{$rightsLabel} : "";
-	
 	
 	#<datacite:rights rightsURI="http://purl.org/coar/access_right/c_abf2">open access</datacite:rights>
 	$topcontent = $session->make_element( "datacite:rights",
@@ -408,8 +396,6 @@ sub xml_dataobj
 	$topcontent->appendChild($session->make_text($rightsLabel));
 	
 	$response->appendChild( $topcontent );	
-	
-	
 	
 	#<datacite:date dateType="Issued">2000-12-25</datacite:date>
 	my $date = "";
@@ -481,9 +467,8 @@ sub xml_dataobj
 			$topcontent->appendChild($session->make_text($embargo_expiry_date));
 			$response->appendChild( $topcontent );	
 		}
-	
-	
 	}
+
 	#no embargo, so OA dates apply
 	elsif ($date ne ""){
 		$topcontent = $session->make_element( "datacite:date",
