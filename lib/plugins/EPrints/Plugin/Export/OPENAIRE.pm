@@ -324,7 +324,6 @@ sub xml_dataobj
 	
 	#Add rights/license info - based on JSON-LD export plugin work
 	#Only the "rights label" is exported for now, future versions will export license details for each file
-	my %rightsList;
     my %jsonldata;
 
 	my $repo = $plugin->{session}->get_repository;
