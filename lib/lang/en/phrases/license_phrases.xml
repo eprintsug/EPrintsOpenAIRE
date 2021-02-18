@@ -3,7 +3,7 @@
 
 <epp:phrase id="licenses_typename_term_access">[YOUR-REPOSITORY] Terms of Access</epp:phrase>
 <epp:phrase id="licenses_description_term_access">
-    <a href="{$config{base_url}}/policies.html#TermsOfAccess">Repository Terms of Access</a>
+    <a href="{$config{base_url}}/policies.html#TermsOfAccess">[YOUR-REPOSITORY] Terms of Access</a>
 </epp:phrase>
 <epp:phrase id="licenses_uri_term_access">https://[YOUR-REPOSITORY-DOMAIN]/policies.html#TermsOfAccess</epp:phrase>
 
