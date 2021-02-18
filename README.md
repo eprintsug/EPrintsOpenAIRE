@@ -9,6 +9,17 @@ The metadata guidelines:
 
 ## Configuration settings
 
+### Enabling the OpenAIRE export plugins
+
+You will have to add the following two lines to your local configuration to enable the plugins:
+
+```
+$c->{plugins}->{"Export::OPENAIRE"}->{params}->{disable} = 0;
+$c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
+```
+
+One common place to add this is in a `plugins.pl` file here: `/archives/[REPOID]/cfg/cfg.d/`
+
 ### Optional OpenAIRE OAI-PMH Custom Set Definition
 
 Optionally, a repository may wish to define a specific OAI "custom set" for OpenAIRE to harvest from.  For example, if you only want a portion of the item_types to be harvested, and/or you want to limit the harvesting to unembargoed items, you would define a custom set using something like this:
