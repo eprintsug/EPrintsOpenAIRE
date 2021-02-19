@@ -7,6 +7,8 @@ The metadata guidelines:
 * https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/
 * https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/application_profile.html
 
+The phrase file (https://github.com/photomedia/EPrintsOpenAIRE/blob/main/lib/lang/en/phrases/license_phrases.xml) contains phrases that would be required for the plugin if/when it includes the LicenseCondition field (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_licensecondition.html#aire-licensecondition).  Current version of this plugin doesn't export this field; it is not Mandatory in V4 of the guidelines.  
+
 ## Configuration settings
 
 ### Enabling the OpenAIRE export plugins
