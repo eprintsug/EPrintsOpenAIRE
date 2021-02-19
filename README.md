@@ -24,7 +24,7 @@ One common place to add this is in a `plugins.pl` file here: `/archives/[REPOID]
 
 ### Optional OpenAIRE OAI-PMH Custom Set Definition
 
-Optionally, a repository may wish to define a specific OAI "custom set" for OpenAIRE to harvest from.  For example, if you only want a portion of the item_types to be harvested, and/or you want to limit the harvesting to unembargoed items, you would define a custom set using something like this:
+Optionally, a repository may wish to define a specific OAI "custom set" for OpenAIRE to harvest from.  For example, if you only want a portion of the item_types to be harvested, and/or you want to limit the harvesting to unembargoed items of certain types (article, conference_item, book_section, monograph, book), you would define a custom set using something like this:
 
 ```
 $oai->{custom_sets} = [
