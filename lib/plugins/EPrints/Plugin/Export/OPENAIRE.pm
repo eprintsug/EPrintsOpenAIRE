@@ -322,10 +322,7 @@ sub xml_dataobj
 
 	
 	
-	#Add rights/license info - based on JSON-LD export plugin work
-	#Only the "rights label" is exported for now, future versions will export license details for each file
-    my %jsonldata;
-
+	#Add rights info 
 	my $repo = $plugin->{session}->get_repository;
 	
 	my $rightsLabel = "metadata only access"; #default, unless we find a document
@@ -339,25 +336,8 @@ sub xml_dataobj
 	}
 	
 	#go through documents, determine "rightsLabel" to be open access, embargoed, restricted or metadata only
-	#store more detailed license information regarding the files based on JSON-LD plugin, but current version of OpenAIRE export plugin doesn't output that yet
 	foreach my $doc ( @docs ) {
-	
-		my %docrights;
-		my ($license_uri,$license_phrase);	
-		
-		my $license = "term_access"; #default for all documents is [LOCAL REPOSITORY] Terms of Access
-		if ($doc->exists_and_set("license")){$license = $doc->get_value("license");}
-		
-		#$docrights{'license_phrase'}="";
-		$docrights{'contentUrl'}="";
-		$docrights{'license'}="";
-		$docrights{'encodingFormat'}="";
-		
-	
-		$license_uri = $repo->phrase("licenses_uri_$license");
-        $license_phrase = $repo->phrase("licenses_typename_$license");
 		if($doc->exists_and_set("date_embargo")){
-				$license_phrase .= "(".$repo->phrase("embargoed_until", embargo_date=>$doc->value("date_embargo")).")";
 				$rightsLabel = "embargoed access"; #at least one embargoed - so embargoed
 				$embargo_expiry_date = $doc->value("date_embargo"); #store embargo expiry date
         }
@@ -366,16 +346,6 @@ sub xml_dataobj
 				$rightsLabel = "restricted access"; # at least one restricted - so restricted
 			}
 		}
-
-		#$docrights{'license_phrase'}=$license_phrase; #Google doesn't recognize license_phrase, so add it to license field
-		$docrights{'contentUrl'}=$doc->get_url;
-		$docrights{'license'}= $license_uri." ".$license_phrase; #merge license-URI with license name and embargo information
-		$docrights{'@type'}="DataDownload";
-		$docrights{'encodingFormat'}=$doc->get_type;
-		if ($doc->exists_and_set("mime_type")) {$docrights{'encodingFormat'}=$doc->value("mime_type");}
-	
-		push @{$jsonldata{distribution}}, \%docrights;
-		
 	}
 
 	# map type URI from OPENAIRE https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_accessrights.html
