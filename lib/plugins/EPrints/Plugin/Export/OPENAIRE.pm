@@ -129,19 +129,11 @@ sub xml_dataobj
 	{
 		$title = "EPrint #".$dataobj->get_value( "eprintid" );	
 	}
-	my $lastmod = $dataobj->get_value( "lastmod" );
-	my $eprint_id = $dataobj->get_value( "eprintid" );
-	my $eprint_rev = $dataobj->get_value( "rev_number" );
 	my $eprint_url = $dataobj->get_url;
-	my $resmap_url = $plugin->dataobj_export_url( $dataobj );
 	my $session = $plugin->{session};
-	my $base_url = $session->config("base_url");
-	my $archive_id = $session->get_repository->get_id;
 	
 	my $eprint_type = $dataobj->get_value( "type" );
-	
-	#my $response = $session->make_doc_fragment;
-	
+		
 	my $response = $plugin->{session}->make_element(
         	"oaire:resource",
 		"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
@@ -480,7 +472,7 @@ sub xml_dataobj
 
 =for COPYRIGHT BEGIN
 
-Copyright 2020 Tomasz Neugebauer, Concordia University
+Copyright 2021 Tomasz Neugebauer, Concordia University
 
 
 =for COPYRIGHT END
