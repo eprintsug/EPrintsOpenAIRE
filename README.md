@@ -42,4 +42,4 @@ This is where other oai-pmh configuration settings are, so this is where you wou
 
 
 ## Acknowledgements
-This was produced by Tomasz Neugebauer
+This was developed by Tomasz Neugebauer and initially hosted at https://github.com/photomedia/EPrintsOpenAIRE
