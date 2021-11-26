@@ -312,7 +312,7 @@ sub xml_dataobj
 	
 	$response->appendChild( $topcontent );	
 
-	
+	my $mapped_rights_URI="";
 	
 	#Add rights info 
 	my $repo = $plugin->{session}->get_repository;
@@ -320,6 +320,14 @@ sub xml_dataobj
 	my $rightsLabel = "metadata only access"; #default, unless we find a document
 	
 	my $embargo_expiry_date = ""; #default NULL embargo date
+	
+	# map type URI from OPENAIRE https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_accessrights.html
+	my %type_map_rightsuri = (
+	"open access" => "http://purl.org/coar/access_right/c_abf2",
+	"embargoed access" => "http://purl.org/coar/access_right/c_f1cf",
+	"restricted access" => "http://purl.org/coar/access_right/c_16ec",
+	"metadata only access" => "http://purl.org/coar/access_right/c_14cb",
+	);
 	
 	#check if at least one document, so default to open access unless we find an embargo or restriction
 	my @docs = $dataobj->get_all_documents();
@@ -338,18 +346,19 @@ sub xml_dataobj
 				$rightsLabel = "restricted access"; # at least one restricted - so restricted
 			}
 		}
+		#<oaire:file accessRightsURI="http://purl.org/coar/access_right/c_abf2" mimeType="application/pdf" objectType="fulltext">http://link-to-the-fulltext.org</oaire:file>
+		$mapped_rights_URI = (exists $type_map_rightsuri{$rightsLabel}) ? $type_map_rightsuri{$rightsLabel} : "";
+		my $mime_type=$doc->value("mime_type");
+		my $docurl=$doc->get_url;
+		$topcontent = $session->make_element( "oaire:file","rightsURI"=>"$mapped_rights_URI","mimeType"=>"$mime_type");
+		$topcontent->appendChild($session->make_text("$docurl"));
+		$response->appendChild( $topcontent );	
 	}
 
-	# map type URI from OPENAIRE https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_accessrights.html
-	my %type_map_rightsuri = (
-	"open access" => "http://purl.org/coar/access_right/c_abf2",
-	"embargoed access" => "http://purl.org/coar/access_right/c_f1cf",
-	"restricted access" => "http://purl.org/coar/access_right/c_16ec",
-	"metadata only access" => "http://purl.org/coar/access_right/c_14cb",
-	);
+	
 	
 	#map from labels to URIs
-	my $mapped_rights_URI = (exists $type_map_rightsuri{$rightsLabel}) ? $type_map_rightsuri{$rightsLabel} : "";
+	$mapped_rights_URI = (exists $type_map_rightsuri{$rightsLabel}) ? $type_map_rightsuri{$rightsLabel} : "";
 	
 	#<datacite:rights rightsURI="http://purl.org/coar/access_right/c_abf2">open access</datacite:rights>
 	$topcontent = $session->make_element( "datacite:rights",
@@ -495,4 +504,3 @@ You should have received a copy of the GNU Lesser General Public
 License along with EPrints.  If not, see L<http://www.gnu.org/licenses/>.
 
 =for LICENSE END
-
