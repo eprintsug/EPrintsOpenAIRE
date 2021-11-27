@@ -318,6 +318,7 @@ sub xml_dataobj
 	my $repo = $plugin->{session}->get_repository;
 	
 	my $rightsLabel = "metadata only access"; #default, unless we find a document
+	my $filerightsLabel = "open access"; #default file-level rights label is open access
 	
 	my $embargo_expiry_date = ""; #default NULL embargo date
 	
@@ -338,16 +339,22 @@ sub xml_dataobj
 	#go through documents, determine "rightsLabel" to be open access, embargoed, restricted or metadata only
 	foreach my $doc ( @docs ) {
 		if($doc->exists_and_set("date_embargo")){
-				$rightsLabel = "embargoed access"; #at least one embargoed - so embargoed
+				$filerightsLabel = "embargoed access"; #this document is embargoed
+				$rightsLabel = "embargoed access"; #at least one embargoed - so eprint embargoed
 				$embargo_expiry_date = $doc->value("date_embargo"); #store embargo expiry date
         }
 		elsif($doc->exists_and_set("security")){
 			if (($doc->value("security") eq "staffonly") || ($doc->value("security") eq "validuser")){
-				$rightsLabel = "restricted access"; # at least one restricted - so restricted
+				$filerightsLabel = "restricted access"; #this document is restricted
+				$rightsLabel = "restricted access"; # at least one restricted - so eprint restricted
 			}
+			elsif ($doc->value("security") eq "public") {
+				#this document is open access (no embargo date or user restrictions)
+				$filerightsLabel = "open access"; #this document is open access
+			}	
 		}
 		#<oaire:file accessRightsURI="http://purl.org/coar/access_right/c_abf2" mimeType="application/pdf" objectType="fulltext">http://link-to-the-fulltext.org</oaire:file>
-		$mapped_rights_URI = (exists $type_map_rightsuri{$rightsLabel}) ? $type_map_rightsuri{$rightsLabel} : "";
+		$mapped_rights_URI = (exists $type_map_rightsuri{$filerightsLabel}) ? $type_map_rightsuri{$filerightsLabel} : "";
 		my $mime_type=$doc->value("mime_type");
 		my $docurl=$doc->get_url;
 		$topcontent = $session->make_element( "oaire:file","rightsURI"=>"$mapped_rights_URI","mimeType"=>"$mime_type");
@@ -357,7 +364,7 @@ sub xml_dataobj
 
 	
 	
-	#map from labels to URIs
+	#map eprint rights from label to URIs
 	$mapped_rights_URI = (exists $type_map_rightsuri{$rightsLabel}) ? $type_map_rightsuri{$rightsLabel} : "";
 	
 	#<datacite:rights rightsURI="http://purl.org/coar/access_right/c_abf2">open access</datacite:rights>
