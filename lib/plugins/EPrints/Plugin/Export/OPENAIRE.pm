@@ -157,16 +157,30 @@ sub xml_dataobj
     #CREATORS
     $topcontent = $session->make_element( "datacite:creators");
     $sub_content = "";
-    my $names = $dataobj->get_value( "creators" );
-    foreach my $name ( @$names )
-      { 
-        my $name_str = EPrints::Utils::make_name_string( $name->{name});
-	        $sub_content = $session->render_data_element (
-	    	4,
-		    "datacite:creatorName",
-		    $name_str );
-	    $topcontent->appendChild( $sub_content);
-      }
+	if ($dataobj->exists_and_set("creators")){
+		my $names = $dataobj->get_value( "creators" );
+		foreach my $name ( @$names )
+		  { 
+			my $name_str = EPrints::Utils::make_name_string( $name->{name});
+				$sub_content = $session->render_data_element (
+				4,
+				"datacite:creatorName",
+				$name_str );
+			$topcontent->appendChild( $sub_content);
+		  }
+	  }
+	 #CORPORATE CREATORS
+	 if ($dataobj->exists_and_set("corp_creators")){
+		 my $names = $dataobj->get_value( "corp_creators" );
+		 foreach my $name ( @$names )
+		  { 
+				$sub_content = $session->render_data_element (
+				4,
+				"datacite:creatorName",
+				$name );
+			$topcontent->appendChild( $sub_content);
+		  }
+	}
 	$response->appendChild( $topcontent );	
 	
 	#FUNDERS
