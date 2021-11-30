@@ -165,7 +165,7 @@ sub xml_dataobj
 				$sub_content = $session->render_data_element (
 				4,
 				"datacite:creatorName",
-				$name_str );
+				$name_str, nameType=>"Personal" );
 			$topcontent->appendChild( $sub_content);
 		  }
 	  }
@@ -177,7 +177,7 @@ sub xml_dataobj
 				$sub_content = $session->render_data_element (
 				4,
 				"datacite:creatorName",
-				$name );
+				$name, nameType=>"Organizational" );
 			$topcontent->appendChild( $sub_content);
 		  }
 	}
