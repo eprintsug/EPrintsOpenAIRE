@@ -357,7 +357,7 @@ sub xml_dataobj
 		$mapped_rights_URI = (exists $type_map_rightsuri{$filerightsLabel}) ? $type_map_rightsuri{$filerightsLabel} : "";
 		my $mime_type=$doc->value("mime_type");
 		my $docurl=$doc->get_url;
-		$topcontent = $session->make_element( "oaire:file","rightsURI"=>"$mapped_rights_URI","mimeType"=>"$mime_type");
+		$topcontent = $session->make_element( "oaire:file","accessRightsURI"=>"$mapped_rights_URI","mimeType"=>"$mime_type");
 		$topcontent->appendChild($session->make_text("$docurl"));
 		$response->appendChild( $topcontent );	
 	}
@@ -384,12 +384,18 @@ sub xml_dataobj
 	if( $dataobj->exists_and_set("date_type")){
 		$dateType = $dataobj->get_value( "date_type" );	
 	}
+	elsif ($date ne ""){
+		#if the date is set, but the DateType is not set, this is an item from a time when DateType was not required in deposit workflow
+		#we map these records with a missing datetype to "published"/"completed" date types below
+		$dateType = "UNKNOWN";
+	}
 	
 	#for everything except for theses, the mapping is like this:
 	my %type_map_date = (
 	 "submitted" => "Available",
 	 "published" => "Issued",
  	 "completed" => "Available",
+	 "UNKNOWN" => "Issued",
 	 );
 	 
 	 #for theses, we should always have completion date which maps to Accepted date, if another date type is stored, treat it the same way as other document types above
@@ -397,6 +403,7 @@ sub xml_dataobj
 	 "submitted" => "Available",
 	 "published" => "Issued",
  	 "completed" => "Accepted",
+	 "UNKNOWN" => "Accepted",
 	 ); 
 	 
 	my $mapped_dateType="";
