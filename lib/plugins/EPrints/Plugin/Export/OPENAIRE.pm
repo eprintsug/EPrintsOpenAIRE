@@ -321,7 +321,7 @@ sub xml_dataobj
 	
 	#<datacite:identifier identifierType="Handle">http://hdl.handle.net/1234/5628</datacite:identifier>
 	$topcontent = $session->make_element( "datacite:identifier",
-				"identifierType"=>"URI");
+				"identifierType"=>"URL");
 	$topcontent->appendChild($session->make_text($eprint_url));
 	
 	$response->appendChild( $topcontent );	
