@@ -2,7 +2,7 @@
 Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digital repository software.
 
 ## Bazaar Plugin
-http://bazaar.eprints.org/1199/
+http://bazaar.eprints.org/1224/
 
 ## Documentation
 
