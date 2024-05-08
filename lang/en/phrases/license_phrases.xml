@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
 <!DOCTYPE phrases SYSTEM "entities.dtd">
-
+<epp:phrases xmlns="http://www.w3.org/1999/xhtml" xmlns:epp="http://eprints.org/ep3/phrase" xmlns:epc="http://eprints.org    /ep3/control">
 <epp:phrase id="licenses_typename_term_access">[YOUR-REPOSITORY] Terms of Access</epp:phrase>
 <epp:phrase id="licenses_description_term_access">
     <a href="{$config{base_url}}/policies.html#TermsOfAccess">[YOUR-REPOSITORY] Terms of Access</a>
