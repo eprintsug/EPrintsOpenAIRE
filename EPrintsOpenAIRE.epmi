@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<epm xmlns='http://eprints.org/ep2/data/2.0' id='http://localhost:8080/id/epm/EPrintsOpenAIRE'>
+  <epmid>EPrintsOpenAIRE</epmid>
+  <uri>http://localhost:8080/id/epm/EPrintsOpenAIRE</uri>
+  <documents>
+    <document>
+      <files>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>epm/EPrintsOpenAIRE/cfg/cfg.d/z_openaire.pl</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>51670605ea08ef380f7260f54b01b919</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>126</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>lang/en/phrases/license_phrases.xml</filename>
+          <mime_type>application/xml</mime_type>
+          <hash>57a1a8898804d8c30edf18e710271b3c</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>10060</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>plugins/EPrints/Plugin/Export/OPENAIRE.pm</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>bb6a45d4263523cfcaa2aadc3ae8f5f9</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>18925</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>plugins/EPrints/Plugin/Export/OPENAIRE_via_PMH.pm</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>5d619d387e3de69732c2259485b599ba</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>2385</filesize>
+        </file>
+      </files>
+      <mime_type>text/plain</mime_type>
+      <format>text</format>
+      <main>plugins/EPrints/Plugin/Export/OPENAIRE_via_PMH.pm</main>
+      <content>install</content>
+    </document>
+  </documents>
+  <version>0.1</version>
+  <creators>
+    <item>
+      <name>
+        <family>Neugebauer</family>
+        <given>Tomasz</given>
+      </name>
+    </item>
+  </creators>
+  <title>OpenAIRE Export Plugin - Literature Repository Guidelines</title>
+</epm>
