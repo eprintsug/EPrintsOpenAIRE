@@ -480,14 +480,22 @@ sub xml_dataobj
 	
 	#extract individual subject keywords from the combined field
 	if( $dataobj->exists_and_set("keywords")){
+
+		my $keywords_field = $dataobj->dataset->field( "keywords" );
+		my @words;
+		if( $keywords_field->get_property( "multiple" ) )
+		{
+			@words = @{$dataobj->value( "keywords" )};
+		}
+		else
+		{
+			my $subjects = $dataobj->get_value( "keywords" );
+			@words = split /[;\,]/, $subjects;
+		}
+	
+        my $subcontent = "";
+  	    my $subject = "";
 		$topcontent = $session->make_element( "datacite:subjects");
-
-		my $subjects = $dataobj->get_value( "keywords" );
-		my $subcontent = "";
-		my $subject = "";
-
-		my @words = split /[;\,]/, $subjects;
-
 		foreach ( @words ) {
 			$subcontent = $session->make_element( "datacite:subject");
 			$subject = $session->make_text($_);
