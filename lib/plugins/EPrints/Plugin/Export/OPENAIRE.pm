@@ -153,6 +153,8 @@ sub xml_dataobj
 		$title );
 	$topcontent->appendChild( $sub_content);
 	$response->appendChild( $topcontent );	
+	
+	my $creator = "";
 
     #CREATORS
     $topcontent = $session->make_element( "datacite:creators");
@@ -166,7 +168,9 @@ sub xml_dataobj
 				4,
 				"datacite:creatorName",
 				$name_str, nameType=>"Personal" );
-			$topcontent->appendChild( $sub_content);
+			$creator = $session->make_element( "datacite:creator");
+			$creator->appendChild ( $sub_content);
+			$topcontent->appendChild( $creator);
 		  }
 	  }
 	 #CORPORATE CREATORS
@@ -178,7 +182,9 @@ sub xml_dataobj
 				4,
 				"datacite:creatorName",
 				$name, nameType=>"Organizational" );
-			$topcontent->appendChild( $sub_content);
+			$creator = $session->make_element( "datacite:creator");
+			$creator->appendChild ( $sub_content);
+			$topcontent->appendChild( $creator);
 		  }
 	}
 	$response->appendChild( $topcontent );	
