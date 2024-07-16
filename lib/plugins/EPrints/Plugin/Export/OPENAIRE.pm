@@ -162,17 +162,33 @@ sub xml_dataobj
 	if ($dataobj->exists_and_set("creators")){
 		my $names = $dataobj->get_value( "creators" );
 		foreach my $name ( @$names )
-		  { 
+		{ 
+			$creator = $session->make_element( "datacite:creator");
+
+			# name
 			my $name_str = EPrints::Utils::make_name_string( $name->{name});
-				$sub_content = $session->render_data_element (
+			$sub_content = $session->render_data_element (
 				4,
 				"datacite:creatorName",
-				$name_str, nameType=>"Personal" );
-			$creator = $session->make_element( "datacite:creator");
-			$creator->appendChild ( $sub_content);
+				$name_str, nameType=>"Personal"
+			);
+			$creator->appendChild( $sub_content);
+
+			# orcid
+			if( defined $name->{orcid} &&  $name->{orcid} ne "" )
+			{
+				my $orcid = $session->make_element( "datacite:nameIdentifier",
+                    "nameIdentifierScheme" => "ORCID",
+					"schemeURI" => "http://orcid.org"
+				);
+				$orcid->appendChild( $session->make_text( $name->{orcid} ) );
+				$creator->appendChild( $orcid );
+			}
+
 			$topcontent->appendChild( $creator);
-		  }
-	  }
+		}
+	}
+
 	 #CORPORATE CREATORS
 	 if ($dataobj->exists_and_set("corp_creators")){
 		 my $names = $dataobj->get_value( "corp_creators" );
