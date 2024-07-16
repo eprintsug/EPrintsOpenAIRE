@@ -17,9 +17,9 @@
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>74da6583dd548b9f7ba5054ab5605417</hash>
+          <hash>4b794ffc89eca94516e2247c4cb4eda0</hash>
           <hash_type>MD5</hash_type>
-          <filesize>19347</filesize>
+          <filesize>19705</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
@@ -36,7 +36,7 @@
       <content>install</content>
     </document>
   </documents>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <creators>
     <item>
       <name>
