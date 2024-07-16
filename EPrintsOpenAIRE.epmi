@@ -15,19 +15,11 @@
         </file>
         <file>
           <datasetid>document</datasetid>
-          <filename>lang/en/phrases/license_phrases.xml</filename>
-          <mime_type>application/xml</mime_type>
-          <hash>57a1a8898804d8c30edf18e710271b3c</hash>
-          <hash_type>MD5</hash_type>
-          <filesize>10060</filesize>
-        </file>
-        <file>
-          <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>80ee211399ef1e80c9271b254b070628</hash>
+          <hash>74da6583dd548b9f7ba5054ab5605417</hash>
           <hash_type>MD5</hash_type>
-          <filesize>19132</filesize>
+          <filesize>19347</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
@@ -44,7 +36,7 @@
       <content>install</content>
     </document>
   </documents>
-  <version>0.2</version>
+  <version>1.0.2</version>
   <creators>
     <item>
       <name>
