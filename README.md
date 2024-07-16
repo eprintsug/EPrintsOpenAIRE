@@ -2,7 +2,7 @@
 Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digital repository software.
 
 ## Bazaar Plugin
-http://bazaar.eprints.org/1224/
+https://bazaar.eprints.org/1238/
 
 ## Documentation
 
@@ -10,20 +10,20 @@ The metadata guidelines:
 * https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/
 * https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/application_profile.html
 
-The phrase file (https://github.com/photomedia/EPrintsOpenAIRE/blob/main/lib/lang/en/phrases/license_phrases.xml) contains phrases that would be required for the plugin if/when it includes the LicenseCondition field (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_licensecondition.html#aire-licensecondition).  Current version of this plugin doesn't export this field; it is not Mandatory in V4 of the guidelines.  
+The phrase file (https://github.com/photomedia/EPrintsOpenAIRE/blob/main/lib/lang/en/phrases/license_phrases.xml) is currently not required as it is not needed in this version of the plugin.  Thus, the phrase file is currently not included in the Bazaar package. It contains phrases that would be required for the plugin if/when it includes the LicenseCondition field (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_licensecondition.html#aire-licensecondition).  Current version of this plugin doesn't export this field; it is not Mandatory in V4 of the guidelines.  
 
 ## Configuration settings
 
 ### Enabling the OpenAIRE export plugins
 
-You will have to add the following two lines to your local configuration to enable the plugins:
+The following two lines are added to your local configuration to enable the plugin:
 
 ```
 $c->{plugins}->{"Export::OPENAIRE"}->{params}->{disable} = 0;
 $c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
 ```
 
-One common place to add this is in a `plugins.pl` file here: `/archives/[REPOID]/cfg/cfg.d/`
+This is included in the /cfg/cfg.d/z_openaire.pl file.
 
 ### Optional OpenAIRE OAI-PMH Custom Set Definition
 
