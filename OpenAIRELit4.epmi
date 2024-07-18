@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<epm xmlns='http://eprints.org/ep2/data/2.0' id='http://localhost:8080/id/epm/OpenAIRELit4'>
+  <epmid>OpenAIRELit4</epmid>
+  <eprintid>1240</eprintid>
+  <uri>http://bazaar.eprints.org/id/epm/OpenAIRELit4</uri>
+  <documents>
+    <document id='http://localhost:8080/id/document/3623'>
+      <docid>3623</docid>
+      <rev_number>1</rev_number>
+      <files>
+        <file id='http://localhost:8080/id/file/20973'>
+          <fileid>20973</fileid>
+          <datasetid>document</datasetid>
+          <objectid>3623</objectid>
+          <filename>epm/OpenAIRELit4/cfg/cfg.d/z_openaire.pl</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>78f2f8ffd0e2d5e67fe10e1d3a4453d2</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>128</filesize>
+          <mtime>2024-07-16 17:25:28</mtime>
+        </file>
+        <file id='http://localhost:8080/id/file/20974'>
+          <fileid>20974</fileid>
+          <datasetid>document</datasetid>
+          <objectid>3623</objectid>
+          <filename>plugins/EPrints/Plugin/Export/OPENAIRE.pm</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>c2898a6bcca34c1d31c3d6d8e513f535</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>20269</filesize>
+          <mtime>2024-07-16 17:25:28</mtime>
+        </file>
+        <file id='http://localhost:8080/id/file/20975'>
+          <fileid>20975</fileid>
+          <datasetid>document</datasetid>
+          <objectid>3623</objectid>
+          <filename>plugins/EPrints/Plugin/Export/OPENAIRE_via_PMH.pm</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>1ef9bce4627e27776a7914d01202bf21</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>2492</filesize>
+          <mtime>2024-07-16 17:25:28</mtime>
+        </file>
+      </files>
+      <eprintid>1240</eprintid>
+      <pos>1</pos>
+      <placement>1</placement>
+      <mime_type>text/plain</mime_type>
+      <format>text</format>
+      <language>en</language>
+      <security>public</security>
+      <main>plugins/EPrints/Plugin/Export/OPENAIRE_via_PMH.pm</main>
+      <content>install</content>
+    </document>
+  </documents>
+  <version>1.0.3</version>
+  <creators>
+    <item>
+      <name>
+        <family>Neugebauer</family>
+        <given>Tomasz</given>
+      </name>
+      <id>tomasz.neugebauer@concordia.ca</id>
+    </item>
+  </creators>
+  <datestamp>2024-07-16 17:25:26</datestamp>
+  <title>OpenAIRE Export Plugin - Literature Repository Guidelines</title>
+  <description>Export Plugin for Interoperability with OpenAIRE.
+Exports metadata based on Guidelines for Literature Repositories by OpenAIRE (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/).This plugin was developed as a part of Canadian Association of Research Libraries OpenAIRE Pilot Project.</description>
+  <requirements>To enable the plugin, the following lines are added in cfg/cfg.d/z_openaire.pl (included with the bazaar plugin)
+
+$c-&gt;{plugins}-&gt;{&quot;Export::OPENAIRE&quot;}-&gt;{params}-&gt;{disable} = 0;
+$c-&gt;{plugins}{&quot;Export::OPENAIRE_via_PMH&quot;}{params}{disable} = 0;</requirements>
+</epm>
