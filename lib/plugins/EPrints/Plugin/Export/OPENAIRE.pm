@@ -203,7 +203,118 @@ sub xml_dataobj
 			$topcontent->appendChild( $creator);
 		  }
 	}
-	$response->appendChild( $topcontent );	
+	$response->appendChild( $topcontent );
+	
+	#CONTRIBUTORS
+
+	# Map Eprints contributorTypes to OpenAIRE
+	# EPrints is based on Library of Congress Relators http://www.loc.gov/loc.terms/relators/
+	# OpenAIRE has their own much shorter list (based on DataCite):
+	# ContactPerson, DataCollector, DataCurator, DataManager, Distributor, Editor, HostingInstitution, Producer, ProjectLeader, ProjectManager, ProjectMember, RegistrationAgency, RegistrationAuthority, RelatedPerson, Researcher, ResearchGroup, RightsHolder, Sponsor, Supervisor, WorkPackageLeader, Other
+	
+	 my %relator_map = (
+	"http://www.loc.gov/loc.terms/relators/DST" => "Distributor",
+    "http://www.loc.gov/loc.terms/relators/EDT" => "Editor",
+	"http://www.loc.gov/loc.terms/relators/PRO" => "Producer",
+	"http://www.loc.gov/loc.terms/relators/RES" => "Researcher",
+	"http://www.loc.gov/loc.terms/relators/SPN" => "Sponsor",
+	"http://www.loc.gov/loc.terms/relators/OTH" => "Other",
+	"http://www.loc.gov/loc.terms/relators/CPH" => "RightsHolder",    # Copyright holder, indirect match
+    "http://www.loc.gov/loc.terms/relators/DTM" => "DataManager",  # not in the EPrints list, but it is a part of LOC relators, so good candidate to add   
+    "http://www.loc.gov/loc.terms/relators/HIS" => "HostingInstitution", # not in the EPrints list, but it is a part of LOC relators, so good candidate to add  
+	"ContactPerson" => "ContactPerson",   # not in the EPrints list, but placing it in case we add it
+    "DataCollector" => "DataCollector",  # not in the EPrints list, but placing it in case we add it
+    "DataCurator" => "DataCurator",    # not in the EPrints list, but placing it in case we add it
+    "ProjectLeader" => "ProjectLeader", # not in the EPrints list, but placing it in case we add it
+    "ProjectManager" => "ProjectManager",  # not in the EPrints list, but placing it in case we add it
+    "ProjectMember" => "ProjectMember",   # not in the EPrints list, but placing it in case we add it
+    "RegistrationAgency" => "RegistrationAgency", # not in the EPrints list, but placing it in case we add it
+    "RegistrationAuthority" => "RegistrationAuthority", # not in the EPrints list, but placing it in case we add it
+    "RelatedPerson" => "RelatedPerson",   # not in the EPrints list, but placing it in case we add it
+    "ResearchGroup" => "ResearchGroup",   # not in the EPrints list, but placing it in case we add it
+    "Supervisor" => "Supervisor",      # not in the EPrints list, but placing it in case we add it
+    "WorkPackageLeader" => "WorkPackageLeader" # not in the EPrints list, but placing it in case we add it
+	 );
+	
+	#EDITORS
+	
+	my $contributor ="";
+	
+	if ($dataobj->exists_and_set("editors") || $dataobj->exists_and_set("contributors"))
+	{
+	 	$topcontent = $session->make_element( "datacite:contributors");
+    	$sub_content = "";
+        #EDITORS
+        if ($dataobj->exists_and_set("editors")){
+                my $names = $dataobj->get_value( "editors" );
+                foreach my $name ( @$names )
+                {
+                        $contributor = $session->make_element( "datacite:contributor");
+
+                        # name
+                        my $name_str = EPrints::Utils::make_name_string( $name->{name});
+                        $sub_content = $session->render_data_element (
+                                4,
+                                "datacite:contributorName",
+                                $name_str, contributorType=>"Editor", nameType=>"Personal"
+                        );
+                        $contributor->appendChild( $sub_content);
+
+                        # orcid
+                        if( defined $name->{orcid} &&  $name->{orcid} ne "" )
+                        {
+                                my $orcid = $session->make_element( "datacite:nameIdentifier",
+                    "nameIdentifierScheme" => "ORCID",
+                                        "schemeURI" => "http://orcid.org"
+                                );
+                                $orcid->appendChild( $session->make_text( $name->{orcid} ) );
+                                $contributor->appendChild( $orcid );
+                        }
+
+                        $topcontent->appendChild( $contributor);
+                }
+        }
+		#CONTRIBUTORS
+        if ($dataobj->exists_and_set("contributors")){
+                my $names = $dataobj->get_value( "contributors" );
+                foreach my $name ( @$names )
+                {
+						my $contributor_type = "Other";
+						$contributor_type=$name->{type};
+						if (defined $name->{type} && $name->{type} ne ""){
+							my $mapped_contributor_type = (exists $relator_map{$contributor_type}) ? $relator_map{$contributor_type} : "Other";
+							$contributor_type=$mapped_contributor_type;
+						}					
+						
+                        $contributor = $session->make_element( "datacite:contributor");
+
+                        # name
+                        my $name_str = EPrints::Utils::make_name_string( $name->{name});
+                        $sub_content = $session->render_data_element (
+                                4,
+                                "datacite:contributorName",
+                                $name_str, contributorType=>$contributor_type
+                        );
+                        $contributor->appendChild( $sub_content);
+
+                        # orcid
+                        if( defined $name->{orcid} &&  $name->{orcid} ne "" )
+                        {
+                                my $orcid = $session->make_element( "datacite:nameIdentifier",
+                    "nameIdentifierScheme" => "ORCID",
+                                        "schemeURI" => "http://orcid.org"
+                                );
+                                $orcid->appendChild( $session->make_text( $name->{orcid} ) );
+                                $contributor->appendChild( $orcid );
+                        }
+
+                        $topcontent->appendChild( $contributor);
+                }
+        }
+
+	$response->appendChild( $topcontent );
+    }
+
 	
 	#FUNDERS
 	if ($dataobj->exists_and_set("funders")){
