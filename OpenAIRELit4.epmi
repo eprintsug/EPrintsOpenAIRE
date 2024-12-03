@@ -15,16 +15,16 @@
         <file>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>b32a539c4f00c467dc5bfd23d5e49afa</hash>
+          <hash>4934aa595af0fb526490dd3bc71cf047</hash>
           <hash_type>MD5</hash_type>
-          <filesize>26398</filesize>
+          <filesize>25723</filesize>
         </file>
         <file>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE_via_PMH.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>1ef9bce4627e27776a7914d01202bf21</hash>
+          <hash>5d619d387e3de69732c2259485b599ba</hash>
           <hash_type>MD5</hash_type>
-          <filesize>2492</filesize>
+          <filesize>2385</filesize>
         </file>
       </files>
       <mime_type>text/plain</mime_type>
