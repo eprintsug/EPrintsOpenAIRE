@@ -38,13 +38,11 @@ sub new
 	#$self->{accept} = [ 'dataobj/eprint', 'list/eprint' ]; 
 	$self->{accept} = [ 'dataobj/eprint'];  #only output one eprint
 	$self->{visible} = 'all';
-    $self->{suffix} = '.xml';
-    $self->{mimetype} = 'application/xml; charset=utf-8';
-	
+	$self->{suffix} = '.xml';
+	$self->{mimetype} = 'application/xml; charset=utf-8';
 
 	return $self;
 }
-
 
 sub output_list
 {
@@ -96,7 +94,6 @@ sub output_list
 	return join( '', @{$r} );
 }
 
-
 sub output_dataobj
 {
 	my( $plugin, $dataobj, %opts ) = @_;
@@ -108,11 +105,9 @@ sub output_dataobj
 	my $resourceMap= EPrints::XML::to_string( $response );
 	EPrints::XML::dispose( $response );
 	
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>".$response;
+	return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>".$response;
 
 }
-
-
 
 sub xml_dataobj
 {
@@ -135,53 +130,207 @@ sub xml_dataobj
 	my $eprint_type = $dataobj->get_value( "type" );
 		
 	my $response = $plugin->{session}->make_element(
-        	"oaire:resource",
-		"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-        	"xmlns:rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        	"xmlns:dc" => "http://www.w3.org/2001/XMLSchema-instance",
-			"xmlns:datacite" => "http://datacite.org/schema/kernel-4",
-			"xmlns:vc" => "http://www.w3.org/2007/XMLSchema-versioning",
-			"xmlns:oaire" => "http://namespace.openaire.eu/schema/oaire/",
+		"oaire:resource",
+		"xmlns:xsi"          => "http://www.w3.org/2001/XMLSchema-instance",
+		"xmlns:rdf"          => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+		"xmlns:dc"           => "http://www.w3.org/2001/XMLSchema-instance",
+		"xmlns:datacite"     => "http://datacite.org/schema/kernel-4",
+		"xmlns:vc"           => "http://www.w3.org/2007/XMLSchema-versioning",
+		"xmlns:oaire"        => "http://namespace.openaire.eu/schema/oaire/",
 		"xsi:schemaLocation" =>"http://namespace.openaire.eu/schema/oaire/ https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd" );
 
-    #TITLE
-	my $topcontent = $session->make_element( "datacite:titles");
+	#TITLE
+	my $topcontent = $session->make_element( "datacite:titles" );
 	my $sub_content = "";
-	$sub_content = $session->render_data_element (
+	$sub_content = $session->render_data_element(
 		4,
 		"datacite:title",
-		$title );
-	$topcontent->appendChild( $sub_content);
+		$title
+	);
+	$topcontent->appendChild( $sub_content );
 	$response->appendChild( $topcontent );	
+	
+	my $creator = "";
 
-    #CREATORS
-    $topcontent = $session->make_element( "datacite:creators");
-    $sub_content = "";
-	if ($dataobj->exists_and_set("creators")){
+	#CREATORS
+	$topcontent = $session->make_element( "datacite:creators" );
+	$sub_content = "";
+
+	if( $dataobj->exists_and_set( "creators" ) )
+	{
 		my $names = $dataobj->get_value( "creators" );
 		foreach my $name ( @$names )
-		  { 
-			my $name_str = EPrints::Utils::make_name_string( $name->{name});
-				$sub_content = $session->render_data_element (
+		{ 
+			$creator = $session->make_element( "datacite:creator" );
+
+			# name
+			my $name_str = EPrints::Utils::make_name_string( $name->{name} );
+			$sub_content = $session->render_data_element(
 				4,
 				"datacite:creatorName",
-				$name_str, nameType=>"Personal" );
-			$topcontent->appendChild( $sub_content);
-		  }
-	  }
-	 #CORPORATE CREATORS
-	 if ($dataobj->exists_and_set("corp_creators")){
-		 my $names = $dataobj->get_value( "corp_creators" );
-		 foreach my $name ( @$names )
-		  { 
-				$sub_content = $session->render_data_element (
-				4,
-				"datacite:creatorName",
-				$name, nameType=>"Organizational" );
-			$topcontent->appendChild( $sub_content);
-		  }
+				$name_str,
+				nameType=>"Personal"
+			);
+			$creator->appendChild( $sub_content );
+
+			# orcid
+			if( defined $name->{orcid} && $name->{orcid} ne "" )
+			{
+				#my $orcid = $session->make_element(
+				#	"datacite:nameIdentifier",
+				#	"nameIdentifierScheme" => "ORCID",
+				#	"schemeURI" => "http://orcid.org"
+				#);
+				#$orcid->appendChild( $session->make_text( $name->{orcid} ) );
+				#$creator->appendChild( $orcid );
+
+				$creator->appendChild( $plugin->make_orcid_element( $name->{orcid} ) );
+			}
+
+			$topcontent->appendChild( $creator);
+		}
 	}
-	$response->appendChild( $topcontent );	
+
+	#CORPORATE CREATORS
+	if ($dataobj->exists_and_set("corp_creators")){
+		my $names = $dataobj->get_value( "corp_creators" );
+		foreach my $name ( @$names )
+		{ 
+			$sub_content = $session->render_data_element (
+				4,
+				"datacite:creatorName",
+				$name,
+				nameType=>"Organizational"
+			);
+			$creator = $session->make_element( "datacite:creator");
+			$creator->appendChild ( $sub_content);
+			$topcontent->appendChild( $creator);
+		}
+	}
+	$response->appendChild( $topcontent );
+	
+	#CONTRIBUTORS
+
+	# Map Eprints contributorTypes to OpenAIRE
+	# EPrints is based on Library of Congress Relators http://www.loc.gov/loc.terms/relators/
+	# OpenAIRE has their own much shorter list (based on DataCite):
+	# ContactPerson, DataCollector, DataCurator, DataManager, Distributor, Editor, HostingInstitution, Producer, ProjectLeader, ProjectManager, ProjectMember, RegistrationAgency, RegistrationAuthority, RelatedPerson, Researcher, ResearchGroup, RightsHolder, Sponsor, Supervisor, WorkPackageLeader, Other
+	
+	my %relator_map = (
+		"http://www.loc.gov/loc.terms/relators/DST" => "Distributor",
+		"http://www.loc.gov/loc.terms/relators/EDT" => "Editor",
+		"http://www.loc.gov/loc.terms/relators/PRO" => "Producer",
+		"http://www.loc.gov/loc.terms/relators/RES" => "Researcher",
+		"http://www.loc.gov/loc.terms/relators/SPN" => "Sponsor",
+		"http://www.loc.gov/loc.terms/relators/OTH" => "Other",
+		"http://www.loc.gov/loc.terms/relators/CPH" => "RightsHolder",    # Copyright holder, indirect match
+		"http://www.loc.gov/loc.terms/relators/DTM" => "DataManager",  # not in the EPrints list, but it is a part of LOC relators, so good candidate to add   
+		"http://www.loc.gov/loc.terms/relators/HIS" => "HostingInstitution", # not in the EPrints list, but it is a part of LOC relators, so good candidate to add  
+		# The following are all not in the EPrints list, but placing it in case we add it
+		"ContactPerson"         => "ContactPerson",
+		"DataCollector"         => "DataCollector",
+		"DataCurator"           => "DataCurator",
+		"ProjectLeader"         => "ProjectLeader",
+		"ProjectManager"        => "ProjectManager",
+		"ProjectMember"         => "ProjectMember",
+		"RegistrationAgency"    => "RegistrationAgency",
+		"RegistrationAuthority" => "RegistrationAuthority",
+		"RelatedPerson"         => "RelatedPerson",
+		"ResearchGroup"         => "ResearchGroup",
+		"Supervisor"            => "Supervisor",
+		"WorkPackageLeader"     => "WorkPackageLeader"
+	);
+	
+	#EDITORS
+	
+	my $contributor ="";
+	
+	if ($dataobj->exists_and_set("editors") || $dataobj->exists_and_set("contributors"))
+	{
+		$topcontent = $session->make_element( "datacite:contributors");
+		$sub_content = "";
+
+		#EDITORS
+		if ($dataobj->exists_and_set("editors")){
+			my $names = $dataobj->get_value( "editors" );
+			foreach my $name ( @$names )
+			{
+				$contributor = $session->make_element( "datacite:contributor");
+
+				# name
+				my $name_str = EPrints::Utils::make_name_string( $name->{name});
+				$sub_content = $session->render_data_element (
+					4,
+					"datacite:contributorName",
+					$name_str,
+					contributorType=>"Editor",
+					nameType=>"Personal"
+				);
+				$contributor->appendChild( $sub_content);
+
+				# orcid
+				if( defined $name->{orcid} &&  $name->{orcid} ne "" )
+				{
+					#my $orcid = $session->make_element(
+					#	"datacite:nameIdentifier",
+					#	"nameIdentifierScheme" => "ORCID",
+					#	"schemeURI" => "http://orcid.org"
+					#);
+					#$orcid->appendChild( $session->make_text( $name->{orcid} ) );
+					#$contributor->appendChild( $orcid );
+
+					$contributor->appendChild( $plugin->make_orcid_element( $name->{orcid} ) );
+				}
+
+				$topcontent->appendChild( $contributor);
+			}
+		}
+
+		#CONTRIBUTORS
+		if ($dataobj->exists_and_set("contributors")){
+			my $names = $dataobj->get_value( "contributors" );
+			foreach my $name ( @$names )
+			{
+				my $contributor_type = "Other"; #TODO BUG?
+				$contributor_type=$name->{type};
+				if (defined $name->{type} && $name->{type} ne ""){
+					my $mapped_contributor_type = (exists $relator_map{$contributor_type}) ? $relator_map{$contributor_type} : "Other";
+					$contributor_type=$mapped_contributor_type;
+				}					
+						
+				$contributor = $session->make_element( "datacite:contributor");
+
+				# name
+				my $name_str = EPrints::Utils::make_name_string( $name->{name});
+				$sub_content = $session->render_data_element (
+					4,
+					"datacite:contributorName",
+					$name_str,
+					contributorType=>$contributor_type
+				);
+				$contributor->appendChild( $sub_content);
+
+				# orcid
+				if( defined $name->{orcid} &&  $name->{orcid} ne "" )
+				{
+					#my $orcid = $session->make_element(
+					#	"datacite:nameIdentifier",
+					#	"nameIdentifierScheme" => "ORCID",
+					#	"schemeURI" => "http://orcid.org"
+					#);
+					#$orcid->appendChild( $session->make_text( $name->{orcid} ) );
+					#$contributor->appendChild( $orcid );
+
+					$contributor->appendChild( $plugin->make_orcid_element( $name->{orcid} ) );
+				}
+
+				$topcontent->appendChild( $contributor);
+			}
+		}
+
+		$response->appendChild( $topcontent );
+	}
+
 	
 	#FUNDERS
 	if ($dataobj->exists_and_set("funders")){
@@ -189,55 +338,56 @@ sub xml_dataobj
 		$sub_content = "";
 		my $names = $dataobj->get_value( "funders" );
 		foreach my $name ( @$names )
-		  { 
-		    $sub_content = $session->make_element( "oaire:fundingReference");
+		{
+			$sub_content = $session->make_element( "oaire:fundingReference");
 			my $name_str = $name;
 			my $sub_sub_content = $session->render_data_element (
 				4,
 				"oaire:funderName",
-				$name_str );
-			$sub_content->appendChild( $sub_sub_content);
-			$topcontent->appendChild( $sub_content);
-		  }
+				$name_str
+			);
+			$sub_content->appendChild( $sub_sub_content );
+			$topcontent->appendChild( $sub_content );
+		}
 		$response->appendChild( $topcontent );	
 	}
 	
 	# Map Eprints type to oaire:resourceType label
 	#article, book_section, monograph, conference_item, book, thesis, graduate_projects, patent, artefact, exhibition, composition, performance, image, video, audio, dataset, experiment, teaching_resource, other
-	 my %type_map = (
-	 "article" => "journal article",
-	 "book_section" => "book part",
-	 "monograph" => "monograph",	#this has subtypes, so we deal with it below
-	 "conference_item" => "conference object", #this has subtypes, so we deal with it below
-	 "book" => "book",
-	 "thesis" => "thesis", #this has subtypes, so we deal with it below
-	 "graduate_projects" => "other",
-	 "patent" => "patent",
-	 "artefact" => "other",
-	 "exhibition" => "other",
-	 "composition" => "musical composition",
-	 "performance" => "other",
-	 "image" => "image",
-	 "video" => "video",
-	 "audio" => "sound",
-	 "dataset" => "dataset",
-	 "experiment" => "other",
-	 "teaching_resource" => "other",
-	 "other" => "other"
+	my %type_map = (
+		"article" => "journal article",
+		"book_section" => "book part",
+		"monograph" => "monograph",	#this has subtypes, so we deal with it below
+		"conference_item" => "conference object", #this has subtypes, so we deal with it below
+		"book" => "book",
+		"thesis" => "thesis", #this has subtypes, so we deal with it below
+		"graduate_projects" => "other",
+		"patent" => "patent",
+		"artefact" => "other",
+		"exhibition" => "other",
+		"composition" => "musical composition",
+		"performance" => "other",
+		"image" => "image",
+		"video" => "video",
+		"audio" => "sound",
+		"dataset" => "dataset",
+		"experiment" => "other",
+		"teaching_resource" => "other",
+		"other" => "other"
 	);
 	
 	# map type URI from OPENAIRE https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_publicationtype.html
-	 my %type_map_uri = (
-	 	"annotation" => "http://purl.org/coar/resource_type/c_1162",
-	 	"journal article" => "http://purl.org/coar/resource_type/c_6501",
- 	 	"letter to the editor" => "http://purl.org/coar/resource_type/c_545b",
- 	 	"editorial" => "http://purl.org/coar/resource_type/c_b239",
- 		"research article" => "http://purl.org/coar/resource_type/c_2df8fbb1",
- 		"review article" => "http://purl.org/coar/resource_type/c_dcae04bc",
+	my %type_map_uri = (
+		"annotation" => "http://purl.org/coar/resource_type/c_1162",
+		"journal article" => "http://purl.org/coar/resource_type/c_6501",
+		"letter to the editor" => "http://purl.org/coar/resource_type/c_545b",
+		"editorial" => "http://purl.org/coar/resource_type/c_b239",
+		"research article" => "http://purl.org/coar/resource_type/c_2df8fbb1",
+		"review article" => "http://purl.org/coar/resource_type/c_dcae04bc",
 		"data paper" => "http://purl.org/coar/resource_type/c_beb9" ,
 		"contribution to journal" => "http://purl.org/coar/resource_type/c_3e5a" ,
 		"book review" => "http://purl.org/coar/resource_type/c_ba08" ,
- 		"book part" => "http://purl.org/coar/resource_type/c_3248",
+		"book part" => "http://purl.org/coar/resource_type/c_3248",
 		"book" => "http://purl.org/coar/resource_type/c_2f33",
 		"bibliography" => "http://purl.org/coar/resource_type/c_86bc"	,
 		"preprint" => "http://purl.org/coar/resource_type/c_816b",
@@ -284,8 +434,7 @@ sub xml_dataobj
 		"website" => "http://purl.org/coar/resource_type/c_7ad9"	,
 		"workflow" => "http://purl.org/coar/resource_type/c_393c",
 		"other" => "http://purl.org/coar/resource_type/c_1843"
-	 );
-	 
+	);
 
 	my $mapped_type = (exists $type_map{$eprint_type}) ? $type_map{$eprint_type} : "other";
 	
@@ -293,12 +442,12 @@ sub xml_dataobj
 	if ($mapped_type eq "monograph"){
 		$mapped_type =  "other"; #default is other
 		if ($dataobj->exists_and_set( "monograph_type" )) {
-				if ($dataobj->get_value("monograph_type") eq "working_paper") {
-					$mapped_type = "working paper";
-				}
-				if ($dataobj->get_value("monograph_type") eq "technical_report"){
-					$mapped_type = "technical report";
-				}
+			if ($dataobj->get_value("monograph_type") eq "working_paper") {
+				$mapped_type = "working paper";
+			}
+			if ($dataobj->get_value("monograph_type") eq "technical_report"){
+				$mapped_type = "technical report";
+			}
 		}
 	}
 	
@@ -338,10 +487,10 @@ sub xml_dataobj
 	
 	# map type URI from OPENAIRE https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_accessrights.html
 	my %type_map_rightsuri = (
-	"open access" => "http://purl.org/coar/access_right/c_abf2",
-	"embargoed access" => "http://purl.org/coar/access_right/c_f1cf",
-	"restricted access" => "http://purl.org/coar/access_right/c_16ec",
-	"metadata only access" => "http://purl.org/coar/access_right/c_14cb",
+		"open access" => "http://purl.org/coar/access_right/c_abf2",
+		"embargoed access" => "http://purl.org/coar/access_right/c_f1cf",
+		"restricted access" => "http://purl.org/coar/access_right/c_16ec",
+		"metadata only access" => "http://purl.org/coar/access_right/c_14cb",
 	);
 	
 	#check if at least one document, so default to open access unless we find an embargo or restriction
@@ -353,10 +502,10 @@ sub xml_dataobj
 	#go through documents, determine "rightsLabel" to be open access, embargoed, restricted or metadata only
 	foreach my $doc ( @docs ) {
 		if($doc->exists_and_set("date_embargo")){
-				$filerightsLabel = "embargoed access"; #this document is embargoed
-				$rightsLabel = "embargoed access"; #at least one embargoed - so eprint embargoed
-				$embargo_expiry_date = $doc->value("date_embargo"); #store embargo expiry date
-        }
+			$filerightsLabel = "embargoed access"; #this document is embargoed
+			$rightsLabel = "embargoed access"; #at least one embargoed - so eprint embargoed
+			$embargo_expiry_date = $doc->value("date_embargo"); #store embargo expiry date
+		}
 		elsif($doc->exists_and_set("security")){
 			if (($doc->value("security") eq "staffonly") || ($doc->value("security") eq "validuser")){
 				$filerightsLabel = "restricted access"; #this document is restricted
@@ -406,27 +555,28 @@ sub xml_dataobj
 	
 	#for everything except for theses, the mapping is like this:
 	my %type_map_date = (
-	 "submitted" => "Available",
-	 "published" => "Issued",
- 	 "completed" => "Available",
-	 "UNKNOWN" => "Issued",
-	 );
-	 
-	 #for theses, we should always have completion date which maps to Accepted date, if another date type is stored, treat it the same way as other document types above
-	 my %type_map_date_theses = (
-	 "submitted" => "Available",
-	 "published" => "Issued",
- 	 "completed" => "Accepted",
-	 "UNKNOWN" => "Accepted",
-	 ); 
-	 
+		"submitted" => "Available",
+		"published" => "Issued",
+		"completed" => "Available",
+		"UNKNOWN" => "Issued",
+	);
+
+	#for theses, we should always have completion date which maps to Accepted date, if another date type is stored, treat it the same way as other document types above
+	my %type_map_date_theses = (
+		"submitted" => "Available",
+		"published" => "Issued",
+		"completed" => "Accepted",
+		"UNKNOWN" => "Accepted",
+	);
+
 	my $mapped_dateType="";
 	
 	if ($mapped_type eq "thesis"){
 		#map from eprints to openaire date types (theses)
 		$mapped_dateType = (exists $type_map_date_theses{$dateType}) ? $type_map_date_theses{$dateType} : "";
-		}
-	else{
+	}
+	else
+	{
 		#map from eprints to openaire date types (non theses)
 		$mapped_dateType = (exists $type_map_date{$dateType}) ? $type_map_date{$dateType} : "";
 	}
@@ -480,14 +630,22 @@ sub xml_dataobj
 	
 	#extract individual subject keywords from the combined field
 	if( $dataobj->exists_and_set("keywords")){
-		$topcontent = $session->make_element( "datacite:subjects");
 
-		my $subjects = $dataobj->get_value( "keywords" );
+		my $keywords_field = $dataobj->dataset->field( "keywords" );
+		my @words;
+		if( $keywords_field->get_property( "multiple" ) )
+		{
+			@words = @{$dataobj->value( "keywords" )};
+		}
+		else
+		{
+			my $subjects = $dataobj->get_value( "keywords" );
+			@words = split /[;\,]/, $subjects;
+		}
+	
 		my $subcontent = "";
 		my $subject = "";
-
-		my @words = split /[;\,]/, $subjects;
-
+		$topcontent = $session->make_element( "datacite:subjects");
 		foreach ( @words ) {
 			$subcontent = $session->make_element( "datacite:subject");
 			$subject = $session->make_text($_);
@@ -501,6 +659,21 @@ sub xml_dataobj
 	EPrints::XML::tidy( $response );
 	return $response;
 
+}
+
+sub make_orcid_element
+{
+	my( $plugin, $orcid ) = @_;
+	
+	my $dni = $plugin->{session}->make_element(
+		"datacite:nameIdentifier",
+		"nameIdentifierScheme" => "ORCID",
+		"schemeURI" => "http://orcid.org"
+	);
+	
+	$dni->appendChild( $plugin->{session}->make_text( $orcid ) );
+	
+	return $dni;
 }
 
 1;
