@@ -176,14 +176,6 @@ sub xml_dataobj
 			# orcid
 			if( defined $name->{orcid} && $name->{orcid} ne "" )
 			{
-				#my $orcid = $session->make_element(
-				#	"datacite:nameIdentifier",
-				#	"nameIdentifierScheme" => "ORCID",
-				#	"schemeURI" => "http://orcid.org"
-				#);
-				#$orcid->appendChild( $session->make_text( $name->{orcid} ) );
-				#$creator->appendChild( $orcid );
-
 				$creator->appendChild( $plugin->make_orcid_element( $name->{orcid} ) );
 			}
 
@@ -271,14 +263,6 @@ sub xml_dataobj
 				# orcid
 				if( defined $name->{orcid} &&  $name->{orcid} ne "" )
 				{
-					#my $orcid = $session->make_element(
-					#	"datacite:nameIdentifier",
-					#	"nameIdentifierScheme" => "ORCID",
-					#	"schemeURI" => "http://orcid.org"
-					#);
-					#$orcid->appendChild( $session->make_text( $name->{orcid} ) );
-					#$contributor->appendChild( $orcid );
-
 					$contributor->appendChild( $plugin->make_orcid_element( $name->{orcid} ) );
 				}
 
@@ -313,14 +297,6 @@ sub xml_dataobj
 				# orcid
 				if( defined $name->{orcid} &&  $name->{orcid} ne "" )
 				{
-					#my $orcid = $session->make_element(
-					#	"datacite:nameIdentifier",
-					#	"nameIdentifierScheme" => "ORCID",
-					#	"schemeURI" => "http://orcid.org"
-					#);
-					#$orcid->appendChild( $session->make_text( $name->{orcid} ) );
-					#$contributor->appendChild( $orcid );
-
 					$contributor->appendChild( $plugin->make_orcid_element( $name->{orcid} ) );
 				}
 
