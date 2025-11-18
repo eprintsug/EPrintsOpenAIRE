@@ -1,18 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
-<epm id='https://spectrum.library.concordia.ca/id/epm/OpenAIRELit4' xmlns='http://eprints.org/ep2/data/2.0'>
+<epm xmlns='http://eprints.org/ep2/data/2.0' id='http://localhost:8080/id/epm/OpenAIRELit4'>
   <epmid>OpenAIRELit4</epmid>
   <uri>https://spectrum.library.concordia.ca/id/epm/OpenAIRELit4</uri>
   <documents>
     <document>
       <files>
         <file>
+          <datasetid>document</datasetid>
           <filename>epm/OpenAIRELit4/cfg/cfg.d/z_openaire.pl</filename>
           <mime_type>text/plain</mime_type>
-          <hash>78f2f8ffd0e2d5e67fe10e1d3a4453d2</hash>
+          <hash>51670605ea08ef380f7260f54b01b919</hash>
           <hash_type>MD5</hash_type>
-          <filesize>128</filesize>
+          <filesize>126</filesize>
         </file>
         <file>
+          <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE.pm</filename>
           <mime_type>text/plain</mime_type>
           <hash>4934aa595af0fb526490dd3bc71cf047</hash>
@@ -20,6 +22,7 @@
           <filesize>25723</filesize>
         </file>
         <file>
+          <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE_via_PMH.pm</filename>
           <mime_type>text/plain</mime_type>
           <hash>5d619d387e3de69732c2259485b599ba</hash>
