@@ -560,10 +560,8 @@ sub xml_dataobj
 		"completed" => "Available",
 		"UNKNOWN" => "Issued",
 	);
-	if( defined $repo->get_conf( "openaire", "type_map_date_local" ) )
-	{
-		%type_map = ( %type_map, %{ $repo->get_conf( "openaire", "type_map_local" ) } );
-	}
+
+	%type_map_date = $plugin->_add_local_config( "type_map_date", \%type_map_date );
 
 	#for theses, we should always have completion date which maps to Accepted date, if another date
 	#type is stored, treat it the same way as other document types above
@@ -573,10 +571,8 @@ sub xml_dataobj
 		"completed" => "Accepted",
 		"UNKNOWN" => "Accepted",
 	);
-	if( defined $repo->get_conf( "openaire", "type_map_local" ) )
-	{
-		%type_map = ( %type_map, %{ $repo->get_conf( "openaire", "type_map_local" ) } );
-	}
+
+	%type_map_date_theses = $plugin->_add_local_config( "type_map_date_theses", \%type_map_date_theses );
 
 	my $mapped_dateType="";
 
