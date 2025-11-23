@@ -576,65 +576,68 @@ sub xml_dataobj
 
 	my $mapped_dateType="";
 
-	if ($mapped_type eq "thesis"){
+	if( $mapped_type eq "thesis" )
+	{
 		#map from eprints to openaire date types (theses)
-		$mapped_dateType = (exists $type_map_date_theses{$dateType}) ? $type_map_date_theses{$dateType} : "";
+		$mapped_dateType = ( exists $type_map_date_theses{$dateType} ) ? $type_map_date_theses{$dateType} : "";
 	}
 	else
 	{
 		#map from eprints to openaire date types (non theses)
-		$mapped_dateType = (exists $type_map_date{$dateType}) ? $type_map_date{$dateType} : "";
+		$mapped_dateType = ( exists $type_map_date{$dateType} ) ? $type_map_date{$dateType} : "";
 	}
 
 	#if embargoed, always set the date available to embargo expiry date
-	if ($embargo_expiry_date ne ""){
+	if( $embargo_expiry_date ne "" )
+	{
 		#in some cases more than one date may be needed, specifically: when we have published date or accepted date (theses) and embargo expiry date
-		if ($mapped_dateType eq "Issued"){
-			$topcontent = $session->make_element( "datacite:dates");
-			$sub_content = $session->make_element( "datacite:date",
-					"dateType"=>"Available");
-			$sub_content->appendChild($session->make_text($embargo_expiry_date));
-			$topcontent->appendChild($sub_content);
-			$sub_content = $session->make_element( "datacite:date",
-					"dateType"=>"Issued");
-			$sub_content->appendChild($session->make_text($date));
-			$topcontent->appendChild($sub_content);
+		if( $mapped_dateType eq "Issued" )
+		{
+			$topcontent = $session->make_element( "datacite:dates" );
+			$sub_content = $session->make_element( "datacite:date", "dateType" => "Available" );
+			$sub_content->appendChild( $session->make_text( $embargo_expiry_date ) );
+			$topcontent->appendChild( $sub_content );
+
+			$sub_content = $session->make_element( "datacite:date", "dateType" => "Issued" );
+			$sub_content->appendChild( $session->make_text( $date ) );
+			$topcontent->appendChild( $sub_content );
+
 			$response->appendChild( $topcontent );
 		}
-		elsif (($mapped_dateType eq "Accepted") && ($mapped_type eq "thesis")){
-			$topcontent = $session->make_element( "datacite:dates");
-			$sub_content = $session->make_element( "datacite:date",
-					"dateType"=>"Available");
-			$sub_content->appendChild($session->make_text($embargo_expiry_date));
-			$topcontent->appendChild($sub_content);
-			$sub_content = $session->make_element( "datacite:date",
-					"dateType"=>"Accepted");
-			$sub_content->appendChild($session->make_text($date));
-			$topcontent->appendChild($sub_content);
+		elsif( ( $mapped_dateType eq "Accepted" ) && ( $mapped_type eq "thesis" ) )
+		{
+			$topcontent = $session->make_element( "datacite:dates" );
+			$sub_content = $session->make_element( "datacite:date",	"dateType" => "Available" );
+			$sub_content->appendChild( $session->make_text( $embargo_expiry_date ) );
+			$topcontent->appendChild( $sub_content );
+
+			$sub_content = $session->make_element( "datacite:date", "dateType" => "Accepted" );
+			$sub_content->appendChild( $session->make_text( $date ) );
+			$topcontent->appendChild( $sub_content );
+
 			$response->appendChild( $topcontent );
 		}
-		else{
+		else
+		{
 			#when we have embargo expiry date and either submitted or completed date, only provide the embargo expiry date
-			$topcontent = $session->make_element( "datacite:date",
-				"dateType"=>"Available");
-			$topcontent->appendChild($session->make_text($embargo_expiry_date));
+			$topcontent = $session->make_element( "datacite:date", "dateType" => "Available" );
+			$topcontent->appendChild( $session->make_text( $embargo_expiry_date ) );
 			$response->appendChild( $topcontent );
 		}
 	}
+	elsif( $date ne "" )
+	{
+		#no embargo, so OA dates apply
+		$topcontent = $session->make_element( "datacite:date", "dateType" => "$mapped_dateType" );
 
-	#no embargo, so OA dates apply
-	elsif ($date ne ""){
-		$topcontent = $session->make_element( "datacite:date",
-				"dateType"=>"$mapped_dateType");
-
-		$topcontent->appendChild($session->make_text($date));
+		$topcontent->appendChild( $session->make_text( $date ) );
 
 		$response->appendChild( $topcontent );
 	}
 
 	#extract individual subject keywords from the combined field
-	if( $dataobj->exists_and_set("keywords")){
-
+	if( $dataobj->exists_and_set( "keywords" ) )
+	{
 		my $keywords_field = $dataobj->dataset->field( "keywords" );
 		my @words;
 		if( $keywords_field->get_property( "multiple" ) )
