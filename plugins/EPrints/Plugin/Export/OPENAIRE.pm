@@ -663,6 +663,11 @@ sub xml_dataobj
 		$response->appendChild( $topcontent );
 	}
 
+	if( $repo->can_call( "openaire", "additional_export_elements" ) )
+	{
+		$repo->call( [ "openaire", "additional_export_elements" ], $response, $dataobj, $repo );
+	}
+
 	EPrints::XML::tidy( $response );
 	return $response;
 
