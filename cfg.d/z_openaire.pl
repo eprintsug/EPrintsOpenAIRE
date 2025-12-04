@@ -12,7 +12,7 @@ $c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
 #	"eprints_manual"	=> "technical documentation",
 #};
 
-# If the mapped value abvoe does not exist in the default URI map in the Export::OPENAIRE plugin,
+# If the mapped value above does not exist in the default URI map in the Export::OPENAIRE plugin,
 # also make an entry here to get the URI for the value above.
 
 #$c->{"openaire"}->{"type_map_uri_local"} = {
@@ -55,5 +55,6 @@ $c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
 #			}
 #		};
 #	}
+#
 #	# no return necessary - we're adding to $response directly
 #};

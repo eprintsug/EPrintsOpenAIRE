@@ -25,11 +25,27 @@ $c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
 
 One common place to add this is in a `plugins.pl` file here: `/archives/[REPOID]/cfg/cfg.d/`
 
+### Locally defined item types
+
+If your repository has additional item types that map to existing COAR resource types (not just 'other'), these can now 
+be defined in your archive's configuration. If the resourceType URI doesn't exist in the Export::OPENAIRE plugin, this can
+also be defined in your config.
+
+Please see the examples in `cfg.d/z_openaire.pl` for full details.
+
+### Additional data mapping
+
+If your repository holds additional metadata that would map into the [OpenAIRE4Lit application profile](https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/application_profile.html), these can be defined in the config via a 
+`$c->{"openaire"}->{"additional_export_elements"}` method.
+
+Any addittion (or re-mapping) must conform to the application profile.
+Please see the example in `cfg.d/z_openaire.pl` for full details.
+
 ### Optional OpenAIRE OAI-PMH Custom Set Definition
 
 Optionally, a repository may wish to define a specific OAI "custom set" for OpenAIRE to harvest from.  For example, if you only want a portion of the item_types to be harvested, and/or you want to limit the harvesting to unembargoed items of certain types (article, conference_item, book_section, monograph, book), you would define a custom set using something like this:
 
-```
+```perl
 $oai->{custom_sets} = [
 	{ 	spec => "openaire", name => "OpenAIRE Set - OA article conference book monograph",
 		filters=> [
