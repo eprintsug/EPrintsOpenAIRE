@@ -38,7 +38,7 @@ Please see the examples in `cfg.d/z_openaire.pl` for full details.
 If your repository holds additional metadata that would map into the [OpenAIRE Literature v4 application profile](https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/application_profile.html), these can be defined in the config via a 
 `$c->{"openaire"}->{"additional_export_elements"}` method.
 
-Any addittion (or re-mapping) must conform to the application profile.
+Any addition (or re-mapping) must conform to the application profile.
 Please see the example in `cfg.d/z_openaire.pl` for full details.
 
 ### Optional OpenAIRE OAI-PMH Custom Set Definition
