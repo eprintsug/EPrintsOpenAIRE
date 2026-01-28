@@ -12,6 +12,23 @@ The metadata guidelines:
 
 The phrase file (https://github.com/photomedia/EPrintsOpenAIRE/blob/main/lib/lang/en/phrases/license_phrases.xml) contains phrases that would be required for the plugin if/when it includes the LicenseCondition field (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_licensecondition.html#aire-licensecondition).  Current version of this plugin doesn't export this field; it is not Mandatory in V4 of the guidelines.  
 
+### Metadata overview
+The OpenAIRE metadata profile defines the following fields:
+
+#### Mandatory fields
+Title, Creator, Publication Date, Resource Type, Resource Identifier, Access Rights
+
+#### Mandatory if applicable
+Contributor, Funding Reference, Embargo Period Date, Language, Publisher, Description, Subject, File Location
+
+#### Recommended
+Alternate Identifier, Related Identifier, Format, Source, License Condition, Coverage, Resource Version
+Citation Title, Citation Volume, Citation Issue, Citation Start Page, Citation End Page, Citation Edition, Citation Conference Place, Citation Conference Date, 
+
+#### Optional
+Size, Geo Location, Audience
+
+
 ## Configuration settings
 
 ### Enabling the OpenAIRE export plugins
