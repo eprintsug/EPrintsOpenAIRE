@@ -24,7 +24,7 @@ This export plugin is written to export in compliance with Guidelines for Litera
 
 package EPrints::Plugin::Export::OPENAIRE;
 
-use EPrints::Plugin::Export::OPENAIRE;
+use EPrints::Plugin::Export::XMLFile;
 @ISA = ( "EPrints::Plugin::Export::XMLFile" );
 
 use strict;
