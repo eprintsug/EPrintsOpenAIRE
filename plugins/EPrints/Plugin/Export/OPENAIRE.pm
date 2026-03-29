@@ -663,6 +663,113 @@ sub xml_dataobj
 		$response->appendChild( $topcontent );
 	}
 
+	# Citation elements.
+	# There is some crossover between these and the EPrints v3.4.7+ HighwirePress export format
+
+	# oaire:citationTitle - <oaire:citationTitle>some Journal Title</oaire:citationTitle>
+	# Choose from one of the 'container title' type fields
+	my $cit_title;
+	foreach my $field ( qw/ publication book_title event_title / )
+	{
+		if( $dataobj->exists_and_set( $field ) )
+		{
+			$cit_title = $dataobj->value( $field );
+			last;
+		}
+	}
+	if( defined $cit_title )
+	{
+		$response->appendChild( $session->render_data_element(
+			4,
+			"oaire:citationTitle",
+			$cit_title
+		) );
+	}
+
+	#oaire:citationVolume - <oaire:citationVolume>10</oaire:citationVolume>
+	if( $dataobj->exists_and_set( "volume" ) )
+	{
+		$response->appendChild( $session->render_data_element(
+			4,
+			"oaire:citationVolume",
+			$dataobj->value( "volume" )
+		) );
+	}
+
+	#oaire:citationIssue - <oaire:citationIssue>1</oaire:citationIssue>
+	if( $dataobj->exists_and_set( "number" ) )
+	{
+		$response->appendChild( $session->render_data_element(
+			4,
+			"oaire:citationIssue",
+			$dataobj->value( "number" )
+		) );
+	}
+
+	#oaire:citationEdition - <oaire:citationEdition>2</oaire:citationEdition>
+	if( $dataobj->exists_and_set( "edition" ) )
+	{
+		$response->appendChild( $session->render_data_element(
+			4,
+			"oaire:citationEdition",
+			$dataobj->value( "edition" )
+		) );
+	}
+
+	#oaire:citationStartPage - <oaire:citationStartPage>100</oaire:citationStartPage>
+	#oaire:citationEndPage - <oaire:citationEndPage>105</oaire:citationEndPage>
+	if( $dataobj->exists_and_set( "pagerange" ) )
+	{
+		my( $from, $to ) = EPrints::MetaField::Pagerange::split_range( $dataobj->value( "pagerange" ) );
+		if( defined $from )
+		{
+			$response->appendChild( $session->render_data_element(
+				4,
+				"oaire:citationStartPage",
+				$from
+			) );
+		}
+		if( defined $to )
+		{
+			$response->appendChild( $session->render_data_element(
+				4,
+				"oaire:citationEndPage",
+				$to
+			) );
+		}
+	}
+
+	#oaire:citationConferencePlace - <oaire:citationConferencePlace>Berlin</oaire:citationConferencePlace>
+	if( $dataobj->exists_and_set( "event_location" ) )
+	{
+		$response->appendChild( $session->render_data_element(
+			4,
+			"oaire:citationConferencePlace",
+			$dataobj->value( "event_location" )
+		) );
+	}
+
+	#oaire:citationConferenceDate
+	# - <oaire:citationConferenceDate>2013-10-22</oaire:citationConferenceDate>
+	# - <oaire:citationConferenceDate>2013-09-22 - 2013-09-26</oaire:citationConferenceDate>
+	# NB The definition of this field in the profile says:
+	# > Recommended best practice for encoding the date value is defined in a profile of ISO 8601 [W3CDTF] and
+	# > follows the YYYY-MM-DD format.
+	# and
+	# > The date should be formatted according to the W3C encoding rules for dates and times
+	# Neither of these are expressed as a *MUST* and therefore the date is taken as-is from the eprint.
+	if( $dataobj->exists_and_set( "event_dates" ) )
+	{
+		$response->appendChild( $session->render_data_element(
+			4,
+			"oaire:citationConferenceDate",
+			$dataobj->value( "event_dates" )
+		) );
+	}
+
+
+	# This config method can be used to insert additional elements, or overwrite existing ones.
+	# Please see the notes/example in the cfg.d/z_openaire.pl file.
 	if( $repo->can_call( "openaire", "additional_export_elements" ) )
 	{
 		$repo->call( [ "openaire", "additional_export_elements" ], $response, $dataobj, $repo );
