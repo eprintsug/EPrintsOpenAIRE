@@ -720,7 +720,20 @@ sub xml_dataobj
 	#oaire:citationEndPage - <oaire:citationEndPage>105</oaire:citationEndPage>
 	if( $dataobj->exists_and_set( "pagerange" ) )
 	{
-		my( $from, $to ) = EPrints::MetaField::Pagerange::split_range( $dataobj->value( "pagerange" ) );
+		my $pagerange = $dataobj->value( "pagerange" );
+		my( $from, $to );
+
+		#EPrints 3.4.7+
+		if( exists &EPrints::MetaField::Pagerange::split_range ) 
+		{
+			( $from, $to ) = EPrints::MetaField::Pagerange::split_range( $pagerange );
+		}
+		else
+		{
+			# handles e.g. '2', '4-8', '5 - 10', Doesn't like e.g. '3-' or '-5'
+			( $from, $to ) = $pagerange =~ /^(\d+)(?=\s?\-\s?(\d+)|$)/;
+		}
+
 		if( defined $from )
 		{
 			$response->appendChild( $session->render_data_element(
