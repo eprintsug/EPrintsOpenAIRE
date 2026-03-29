@@ -40,7 +40,7 @@ sub new
 	$self->{visible} = "";
 	$self->{suffix} = ".xml";
 	$self->{mimetype} = "application/xml";
-	
+
 	$self->{metadataPrefix} = "oai_openaire";
 	$self->{xmlns} = "http://namespace.openaire.eu/schema/oaire/";
 	$self->{schemaLocation} = "https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd";
@@ -70,7 +70,7 @@ sub xml_dataobj
 	my $main_plugin = $plugin->{session}->plugin( "Export::OPENAIRE" );
 
 	my $data = $main_plugin->xml_dataobj( $dataobj );
-	
+
 	return $data;
 }
 
