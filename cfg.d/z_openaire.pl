@@ -36,10 +36,11 @@ $c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
 #	my( $response, $eprint, $repo ) = @_;
 #
 #	# Making something like: <oaire:citationTitle>some Journal Title</oaire:citationTitle>
-#	if( $eprint->exists_and_set( "publication" ) )
+#	# but checking there isn't an element in the response already
+#	if( $eprint->exists_and_set( "other_publication_title" ) && $response->getElementsByLocalName( "oaire:citationTitle" )->size == 0 )
 #	{
 #		my $cit_title = $repo->make_element( "oaire:citationTitle" );
-#		$cit_title->appendChild( $repo->make_text( $eprint->value( "publication" ) ) );
+#		$cit_title->appendChild( $repo->make_text( $eprint->value( "other_publication_title" ) ) );
 #
 #		$response->appendChild( $cit_title );
 #	}
