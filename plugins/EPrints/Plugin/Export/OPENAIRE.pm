@@ -803,9 +803,9 @@ sub _add_local_config
 	my $repo = $plugin->{session}->get_repository;
 
 	if( defined $repo->get_conf( "openaire", "${conf_name}_local" ) )
-        {
-                $map = { %$map, %{ $repo->get_conf( "openaire", "${conf_name}_local" ) } };
-        }
+	{
+		$map = { %$map, %{ $repo->get_conf( "openaire", "${conf_name}_local" ) } };
+	}
 
 	return %$map;
 }
