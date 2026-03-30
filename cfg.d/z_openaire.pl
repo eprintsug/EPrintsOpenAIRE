@@ -1,5 +1,5 @@
 $c->{plugins}->{"Export::OPENAIRE"}->{params}->{disable} = 0;
-$c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
+$c->{plugins}->{"Export::OPENAIRE_via_PMH"}->{params}->{disable} = 0;
 
 # If you have additional item types configured in your repository, add an entry for them here.
 # The key should be the eprint type, and the value should be something defined here:
