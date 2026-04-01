@@ -861,6 +861,7 @@ sub make_orcid_element
 	return $dni;
 }
 
+# Use existing phrases that have a link to the license and the displayed text.
 sub get_licence_uri_and_text_from_phrase
 {
 	my( $plugin, $license ) = @_;
@@ -871,10 +872,15 @@ sub get_licence_uri_and_text_from_phrase
                 my $phr = $plugin->{session}->html_phrase( $phrase_id );
 
 		my $a = ($phr->getElementsByTagName( "a" ))[0];
-		my $uri;
-		$uri = $a->getAttribute( "href" ) if defined $a;
+		my ( $text, $uri);
+		
+		if( defined $a )
+		{
+			$uri = $a->getAttribute( "href" );
+			$text = $a->textContent;
+		}
 
-		return ( $a->textContent, $uri );
+		return ( $text, $uri );
 	}
 }
 
