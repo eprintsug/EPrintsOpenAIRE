@@ -1,16 +1,18 @@
-# EPrintsOpenAIRE
+# EPrintsOpenAIRE - v1.1.0 (April 2026)
 Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digital repository software.
 
 ## Bazaar Plugin
-http://bazaar.eprints.org/1224/
+https://bazaar.eprints.org/id/epm/OpenAIRELit4
+The source for the Bazaar package is currently in the main branch: https://github.com/eprintsug/EPrintsOpenAIRE/
 
-## Documentation
+## Eprints ingredient
+https://github.com/eprintsug/EPrintsOpenAIRE/tree/3_4 - use the 3_4 branch.
+
+## Metadata Schema Documentation
 
 The metadata guidelines: 
 * https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/
 * https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/application_profile.html
-
-The phrase file (https://github.com/photomedia/EPrintsOpenAIRE/blob/main/lib/lang/en/phrases/license_phrases.xml) contains phrases that would be required for the plugin if/when it includes the LicenseCondition field (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_licensecondition.html#aire-licensecondition).  Current version of this plugin doesn't export this field; it is not Mandatory in V4 of the guidelines.  
 
 ### Metadata overview
 The OpenAIRE metadata profile defines the following fields:
@@ -22,11 +24,25 @@ Title, Creator, Publication Date, Resource Type, Resource Identifier, Access Rig
 Contributor, Funding Reference, Embargo Period Date, Language, Publisher, Description, Subject, File Location
 
 #### Recommended
-Alternate Identifier, Related Identifier, Format, Source, License Condition, Coverage, Resource Version
+Alternate Identifier, Related Identifier, Format, Source, License Condition (see below), Coverage, Resource Version
 Citation Title, Citation Volume, Citation Issue, Citation Start Page, Citation End Page, Citation Edition, Citation Conference Place, Citation Conference Date, 
 
-#### Optional
+_License Condition_: the text and URI for this are derived from the `license_description_[license_type]` phrase. The href of the first link,
+and the text of the first link in the phrase willbe used for this element.
+If you have a custom licences in your repository (e.g. 'term_access') the description phrase for them should be in the format:
+```xml
+<epp:phrase id="licenses_description_term_access">
+    <a href="{$config{base_url}}/policies.html#TermsOfAccess">Repo Name - Terms of Access</a>
+</epp:phrase>
+```
+If no license description phrase exists, or if it doesn't have a link in it, the LIcence Condition element will not be generated.
+
+
+#### Optional (currently not mapped)
 Size, Geo Location, Audience
+
+_Whilst the above fields are not mapped, if your repository has this data you can now use the `additional_export_elements` (see below)
+to add these elements to the record representation._ 
 
 
 ## Configuration settings
@@ -35,9 +51,9 @@ Size, Geo Location, Audience
 
 You will have to add the following two lines to your local configuration to enable the plugins:
 
-```
+```perl
 $c->{plugins}->{"Export::OPENAIRE"}->{params}->{disable} = 0;
-$c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
+$c->{plugins}->{"Export::OPENAIRE_via_PMH"}->{params}->{disable} = 0;
 ```
 
 One common place to add this is in a `plugins.pl` file here: `/archives/[REPOID]/cfg/cfg.d/`
