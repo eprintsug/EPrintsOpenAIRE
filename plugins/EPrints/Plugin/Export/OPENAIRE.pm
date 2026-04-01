@@ -777,7 +777,7 @@ sub xml_dataobj
 		my( $from, $to );
 
 		#EPrints 3.4.7+
-		if( exists &EPrints::MetaField::Pagerange::split_range ) 
+		if( exists &EPrints::MetaField::Pagerange::split_range )
 		{
 			( $from, $to ) = EPrints::MetaField::Pagerange::split_range( $pagerange );
 		}
@@ -868,8 +868,8 @@ sub get_licence_uri_and_text_from_phrase
 
 	my $phrase_id = "licenses_description_$license";
 	if( $plugin->{session}->get_lang->has_phrase( $phrase_id, $plugin->{session} ) )
-        {
-                my $phr = $plugin->{session}->html_phrase( $phrase_id );
+	{
+		my $phr = $plugin->{session}->html_phrase( $phrase_id );
 
 		my $a = ($phr->getElementsByTagName( "a" ))[0];
 		my ( $text, $uri);
