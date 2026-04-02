@@ -782,7 +782,7 @@ sub xml_dataobj
 		my( $from, $to );
 
 		#EPrints 3.4.7+
-		if( exists &EPrints::MetaField::Pagerange::split_range )
+		if( EPrints::MetaField::Pagerange->can( "split_range" ) )
 		{
 			( $from, $to ) = EPrints::MetaField::Pagerange::split_range( $pagerange );
 		}
