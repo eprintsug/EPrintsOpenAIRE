@@ -504,6 +504,11 @@ sub xml_dataobj
 
 	#go through documents, determine "rightsLabel" to be open access, embargoed, restricted or metadata only
 	foreach my $doc ( @docs ) {
+		if( $repo->can_call( "openaire", "exclude_document" ) )
+		{
+			next if $repo->call( [ "openaire", "exclude_document" ], $doc, $repo );
+		}
+
 		if($doc->exists_and_set("date_embargo")){
 			$filerightsLabel = "embargoed access"; #this document is embargoed
 			$rightsLabel = "embargoed access"; #at least one embargoed - so eprint embargoed

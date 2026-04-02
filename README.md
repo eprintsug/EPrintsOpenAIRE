@@ -58,6 +58,22 @@ $c->{plugins}->{"Export::OPENAIRE_via_PMH"}->{params}->{disable} = 0;
 
 One common place to add this is in a `plugins.pl` file here: `/archives/[REPOID]/cfg/cfg.d/`
 
+### Excluding documents from the metadata
+If documents meeting specific criteria should be excluded from the metadata harvested from your repository, a config function
+can be defined to exclude them.
+
+There is an example in `cfg.d/z_openaire.pl` that tests for a non-standard 'security' value, and will exclude the document if it is 'hidden'.
+```perl
+$c->{"openaire"}->{"exclude_document"} = sub
+{
+    my( $doc, $repo ) = @_;
+    # your logic here
+    # ...
+    return 1; # to exclude the document
+    return 0; # to include the document (default).
+}
+```
+
 ### Locally defined item types
 
 If your repository has additional item types that map to existing COAR resource types (not just 'other'), these can now 
