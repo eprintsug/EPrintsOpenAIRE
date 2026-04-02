@@ -33,7 +33,7 @@ $c->{plugins}->{"Export::OPENAIRE_via_PMH"}->{params}->{disable} = 0;
 #		return 1 if $doc->value( "security" ) eq 'hidden'; #this document will not be represented.
 #	}
 #	return 0;
-#}
+#};
 
 # The following can be used to map additional elements into the Export::OPENAIRE output.
 # This can be useful if you have custom field config for storing e.g. funders.
