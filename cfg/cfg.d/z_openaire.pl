@@ -1,5 +1,5 @@
 $c->{plugins}->{"Export::OPENAIRE"}->{params}->{disable} = 0;
-$c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
+$c->{plugins}->{"Export::OPENAIRE_via_PMH"}->{params}->{disable} = 0;
 
 # If you have additional item types configured in your repository, add an entry for them here.
 # The key should be the eprint type, and the value should be something defined here:
@@ -20,6 +20,20 @@ $c->{plugins}{"Export::OPENAIRE_via_PMH"}{params}{disable} = 0;
 #	"technical documentation"       => "http://purl.org/coar/resource_type/c_71bd",
 #};
 
+# If the following function is defined, it can be used to exclude all metadata for a given document from the export,
+# and it won't be used to calculate other metadata such as open-ness.
+#
+# If the function returns a truthy value the document will be excluded.
+#$c->{"openaire"}->{"exclude_document"} = sub
+#{
+#	my( $doc, $repo ) = @_;
+#
+#	if( $doc->exists_and_set( "security" ) )
+#	{
+#		return 1 if $doc->value( "security" ) eq 'hidden'; #this document will not be represented.
+#	}
+#	return 0;
+#};
 
 # The following can be used to map additional elements into the Export::OPENAIRE output.
 # This can be useful if you have custom field config for storing e.g. funders.

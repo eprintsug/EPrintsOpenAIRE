@@ -35,7 +35,6 @@ sub new
 	my $self = $class->SUPER::new( %opts );
 
 	$self->{name} = "OPENAIRE";
-	#$self->{accept} = [ 'dataobj/eprint', 'list/eprint' ];
 	$self->{accept} = [ 'dataobj/eprint']; #only output one eprint
 	$self->{visible} = 'all';
 	$self->{suffix} = '.xml';
@@ -65,7 +64,7 @@ sub output_list
 
 	$opts{list}->map(sub {
 		my( $session, $dataset, $dataobj ) = @_;
-		$part = $plugin->output_dataobj( $dataobj, multiple => 1, %opts );
+		$part = $plugin->output_dataobj( $dataobj, %opts );
 		if( defined $opts{fh} )
 		{
 			print {$opts{fh}} $part;
@@ -98,8 +97,6 @@ sub output_dataobj
 {
 	my( $plugin, $dataobj, %opts ) = @_;
 
-	my $multiple = $opts{"multiple"};
-
 	my $response = $plugin->xml_dataobj( $dataobj );
 
 	my $resourceMap= EPrints::XML::to_string( $response );
@@ -111,8 +108,6 @@ sub output_dataobj
 sub xml_dataobj
 {
 	my( $plugin, $dataobj, %opts ) = @_;
-
-	my $multiple = $opts{"multiple"};
 
 	my $title;
 	if( $dataobj->dataset->get_field( "title" ) )
@@ -491,6 +486,11 @@ sub xml_dataobj
 		"metadata only access" => "http://purl.org/coar/access_right/c_14cb",
 	);
 
+	# LicenseCondition: this is defined as a 0-or-1 field. In EPrints if there are multiple documents, they may have different licenses applied.
+	# https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/field_licensecondition.html#aire-licensecondition
+	# If all licenses are the same, and if all embargoe end dates are the same, we can construct a sensbible field in the output.
+	my( $licenseCondition, $licenseConditionStartDate );
+
 	#check if at least one document, so default to open access unless we find an embargo or restriction
 	my @docs = $dataobj->get_all_documents();
 	if (@docs > 0) {
@@ -499,6 +499,11 @@ sub xml_dataobj
 
 	#go through documents, determine "rightsLabel" to be open access, embargoed, restricted or metadata only
 	foreach my $doc ( @docs ) {
+		if( $repo->can_call( "openaire", "exclude_document" ) )
+		{
+			next if $repo->call( [ "openaire", "exclude_document" ], $doc, $repo );
+		}
+
 		if($doc->exists_and_set("date_embargo")){
 			$filerightsLabel = "embargoed access"; #this document is embargoed
 			$rightsLabel = "embargoed access"; #at least one embargoed - so eprint embargoed
@@ -521,6 +526,54 @@ sub xml_dataobj
 		$topcontent = $session->make_element( "oaire:file","accessRightsURI"=>"$mapped_rights_URI","mimeType"=>"$mime_type");
 		$topcontent->appendChild($session->make_text("$docurl"));
 		$response->appendChild( $topcontent );
+
+		# check licenceConditions
+		if( $doc->exists_and_set( "license" ) )
+		{
+			my $lic = $doc->value( "license" );
+			if( !defined $licenseCondition )
+			{
+				$licenseCondition = $lic;
+			}
+			elsif( $lic ne $licenseCondition )
+			{
+				$licenseCondition = "MULTIPLE"; #some flag that's not likely to be in a license field
+			}
+
+			# this is checked above, for a different purpose. Here, because licenceCondition is a singular element, we can't cope with multiple different end dates.
+			if( $doc->exists_and_set( "date_embargo" ) )
+			{
+				my $emb = $doc->value( "date_embargo" );
+				if( !defined $licenseConditionStartDate )
+				{
+					$licenseConditionStartDate = $emb;
+				}
+				elsif( $licenseConditionStartDate ne $emb )
+				{
+					$licenseConditionStartDate = "MULTIPLE";
+				}
+			}
+		}
+	}
+	#
+	#<oaire:licenseCondition startDate="2019-02-01"
+	#      uri="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial</oaire:licenseCondition>
+	if( defined $licenseCondition && $licenseCondition ne "MULTIPLE" )
+	{
+		my( $text, $uri ) = $plugin->get_licence_uri_and_text_from_phrase( $licenseCondition );
+
+		if( defined $text && defined $uri )
+		{
+			my $licCon = $session->make_element( "oaire:licenseCondition", uri => $uri );
+			$licCon->appendChild( $session->make_text( $text ) );
+		
+			if( defined $licenseConditionStartDate && $licenseConditionStartDate ne "MULTIPLE" )
+			{
+				$licCon->setAttribute( "startDate", $licenseConditionStartDate );
+			}
+
+			$response->appendChild( $licCon );
+		}
 	}
 
 	#map eprint rights from label to URIs
@@ -724,7 +777,7 @@ sub xml_dataobj
 		my( $from, $to );
 
 		#EPrints 3.4.7+
-		if( exists &EPrints::MetaField::Pagerange::split_range ) 
+		if( EPrints::MetaField::Pagerange->can( "split_range" ) )
 		{
 			( $from, $to ) = EPrints::MetaField::Pagerange::split_range( $pagerange );
 		}
@@ -806,6 +859,29 @@ sub make_orcid_element
 	$dni->appendChild( $plugin->{session}->make_text( $orcid ) );
 
 	return $dni;
+}
+
+# Use existing phrases that have a link to the license and the displayed text.
+sub get_licence_uri_and_text_from_phrase
+{
+	my( $plugin, $license ) = @_;
+
+	my $phrase_id = "licenses_description_$license";
+	if( $plugin->{session}->get_lang->has_phrase( $phrase_id, $plugin->{session} ) )
+	{
+		my $phr = $plugin->{session}->html_phrase( $phrase_id );
+
+		my $a = ($phr->getElementsByTagName( "a" ))[0];
+		my ( $text, $uri);
+		
+		if( defined $a )
+		{
+			$uri = $a->getAttribute( "href" );
+			$text = $a->textContent;
+		}
+
+		return ( $text, $uri );
+	}
 }
 
 # This will look for additions to the maps defined above.
