@@ -35,7 +35,6 @@ sub new
 	my $self = $class->SUPER::new( %opts );
 
 	$self->{name} = "OPENAIRE";
-	#$self->{accept} = [ 'dataobj/eprint', 'list/eprint' ];
 	$self->{accept} = [ 'dataobj/eprint']; #only output one eprint
 	$self->{visible} = 'all';
 	$self->{suffix} = '.xml';
@@ -65,7 +64,7 @@ sub output_list
 
 	$opts{list}->map(sub {
 		my( $session, $dataset, $dataobj ) = @_;
-		$part = $plugin->output_dataobj( $dataobj, multiple => 1, %opts );
+		$part = $plugin->output_dataobj( $dataobj, %opts );
 		if( defined $opts{fh} )
 		{
 			print {$opts{fh}} $part;
@@ -98,8 +97,6 @@ sub output_dataobj
 {
 	my( $plugin, $dataobj, %opts ) = @_;
 
-	my $multiple = $opts{"multiple"};
-
 	my $response = $plugin->xml_dataobj( $dataobj );
 
 	my $resourceMap= EPrints::XML::to_string( $response );
@@ -111,8 +108,6 @@ sub output_dataobj
 sub xml_dataobj
 {
 	my( $plugin, $dataobj, %opts ) = @_;
-
-	my $multiple = $opts{"multiple"};
 
 	my $title;
 	if( $dataobj->dataset->get_field( "title" ) )
