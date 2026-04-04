@@ -28,14 +28,14 @@ Alternate Identifier, Related Identifier, Format, Source, License Condition (see
 Citation Title, Citation Volume, Citation Issue, Citation Start Page, Citation End Page, Citation Edition, Citation Conference Place, Citation Conference Date, 
 
 _License Condition_: the text and URI for this are derived from the `license_description_[license_type]` phrase. The href of the first link,
-and the text of the first link in the phrase willbe used for this element.
+and the text of the first link in the phrase will be used for this element.
 If you have a custom licences in your repository (e.g. 'term_access') the description phrase for them should be in the format:
 ```xml
 <epp:phrase id="licenses_description_term_access">
     <a href="{$config{base_url}}/policies.html#TermsOfAccess">Repo Name - Terms of Access</a>
 </epp:phrase>
 ```
-If no license description phrase exists, or if it doesn't have a link in it, the LIcence Condition element will not be generated.
+If no license description phrase exists, or if it doesn't have a link in it, the Licence Condition element will not be generated.
 
 
 #### Optional (currently not mapped)
