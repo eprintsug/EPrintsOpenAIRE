@@ -36,7 +36,7 @@
       <content>install</content>
     </document>
   </documents>
-  <version>1.0.4</version>
+  <version>1.1.0</version>
   <creators>
     <item>
       <name>
@@ -45,13 +45,21 @@
       </name>
       <id>tomasz.neugebauer@concordia.ca</id>
     </item>
+    <item>
+      <name>
+        <family>Salter</family>
+        <given>John</given>
+      </name>
+      <id>https://orcid.org/0000-0002-8611-8266</id>
+    </item>
   </creators>
   <title>OpenAIRE Export Plugin - Literature Repository Guidelines</title>
   <description>Export Plugin for Interoperability with OpenAIRE.
 Exports metadata based on Guidelines for Literature Repositories by OpenAIRE (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/).This plugin was developed as a part of Canadian Association of Research Libraries OpenAIRE Pilot Project.
-This version includes export of contributors and editors.</description>
+	  This version includes (i) export of contributors and editors, (ii) export of 'citation' fields, (iii) additional configuration options to allow additional metadata to be mapped, (iv) ability to exclude documents from the export.
+	  For more details, see the README at https://github.com/eprintsug/EPrintsOpenAIRE/ </description>
   <requirements>To enable the plugin, the following lines are added in cfg/cfg.d/z_openaire.pl (included with the bazaar plugin)
 
 $c-&gt;{plugins}-&gt;{&quot;Export::OPENAIRE&quot;}-&gt;{params}-&gt;{disable} = 0;
-$c-&gt;{plugins}{&quot;Export::OPENAIRE_via_PMH&quot;}{params}{disable} = 0;</requirements>
+$c-&gt;{plugins}-&gt;{&quot;Export::OPENAIRE_via_PMH&quot;}-&gt;{params}-&gt;{disable} = 0;</requirements>
 </epm>
