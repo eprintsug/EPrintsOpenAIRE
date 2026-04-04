@@ -5,7 +5,7 @@ Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digi
 https://bazaar.eprints.org/id/epm/OpenAIRELit4
 The source for the Bazaar package is currently in the main branch: https://github.com/eprintsug/EPrintsOpenAIRE/
 
-## Eprints ingredient
+## EPrints ingredient
 https://github.com/eprintsug/EPrintsOpenAIRE/tree/3_4 - use the 3_4 branch.
 
 ## Metadata Schema Documentation
@@ -49,7 +49,7 @@ to add these elements to the record representation._
 
 ### Enabling the OpenAIRE export plugins
 
-You will have to add the following two lines to your local configuration to enable the plugins:
+If using the EPM version, you will have to add the following two lines to your local configuration to enable the plugins:
 
 ```perl
 $c->{plugins}->{"Export::OPENAIRE"}->{params}->{disable} = 0;
