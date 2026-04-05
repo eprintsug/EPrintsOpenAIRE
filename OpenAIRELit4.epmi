@@ -1,5 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
-<epm xmlns='http://eprints.org/ep2/data/2.0' id='http://localhost:8080/id/epm/OpenAIRELit4'>
+<?xml version="1.0" encoding="utf-8"?>
+<epm xmlns="http://eprints.org/ep2/data/2.0" id="http://localhost:8080/id/epm/OpenAIRELit4">
   <epmid>OpenAIRELit4</epmid>
   <uri>https://spectrum.library.concordia.ca/id/epm/OpenAIRELit4</uri>
   <documents>
@@ -8,26 +8,26 @@
         <file>
           <datasetid>document</datasetid>
           <filename>epm/OpenAIRELit4/cfg/cfg.d/z_openaire.pl</filename>
-          <mime_type>text/plain</mime_type>
-          <hash>51670605ea08ef380f7260f54b01b919</hash>
+          <mime_type>application/x-perl</mime_type>
+          <hash>76d3c97dfe5ed2aa6dc8c21c00038302</hash>
           <hash_type>MD5</hash_type>
-          <filesize>126</filesize>
+          <filesize>3158</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE.pm</filename>
-          <mime_type>text/plain</mime_type>
-          <hash>4934aa595af0fb526490dd3bc71cf047</hash>
+          <mime_type>application/x-perl</mime_type>
+          <hash>a57b1413f619e43459303b295af1b7ae</hash>
           <hash_type>MD5</hash_type>
-          <filesize>25723</filesize>
+          <filesize>30674</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE_via_PMH.pm</filename>
-          <mime_type>text/plain</mime_type>
-          <hash>5d619d387e3de69732c2259485b599ba</hash>
+          <mime_type>application/x-perl</mime_type>
+          <hash>ca5547a0a5c4f155249489bd01c82121</hash>
           <hash_type>MD5</hash_type>
-          <filesize>2385</filesize>
+          <filesize>2383</filesize>
         </file>
       </files>
       <mime_type>text/plain</mime_type>
@@ -60,6 +60,7 @@ Exports metadata based on Guidelines for Literature Repositories by OpenAIRE (ht
 	  For more details, see the README at https://github.com/eprintsug/EPrintsOpenAIRE/ </description>
   <requirements>To enable the plugin, the following lines are added in cfg/cfg.d/z_openaire.pl (included with the bazaar plugin)
 
-$c-&gt;{plugins}-&gt;{&quot;Export::OPENAIRE&quot;}-&gt;{params}-&gt;{disable} = 0;
-$c-&gt;{plugins}-&gt;{&quot;Export::OPENAIRE_via_PMH&quot;}-&gt;{params}-&gt;{disable} = 0;</requirements>
+$c-&gt;{plugins}-&gt;{"Export::OPENAIRE"}-&gt;{params}-&gt;{disable} = 0;
+$c-&gt;{plugins}-&gt;{"Export::OPENAIRE_via_PMH"}-&gt;{params}-&gt;{disable} = 0;</requirements>
+  <datestamp>2026-04-05T08:34:34Z</datestamp>
 </epm>
