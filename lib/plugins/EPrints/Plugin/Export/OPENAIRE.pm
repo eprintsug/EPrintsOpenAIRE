@@ -246,7 +246,12 @@ sub xml_dataobj
 			my $names = $dataobj->get_value( "editors" );
 			foreach my $name ( @$names )
 			{
-				$contributor = $session->make_element( "datacite:contributor" );
+				$contributor = $session->render_data_element(
+					4,
+					"datacite:contributor",
+					"",
+					contributorType=>"Editor"
+				);
 
 				# name
 				my $name_str = EPrints::Utils::make_name_string( $name->{name} );
@@ -254,7 +259,6 @@ sub xml_dataobj
 					4,
 					"datacite:contributorName",
 					$name_str,
-					contributorType=>"Editor",
 					nameType=>"Personal"
 				);
 				$contributor->appendChild( $sub_content );
@@ -283,15 +287,19 @@ sub xml_dataobj
 					$contributor_type=$mapped_contributor_type;
 				}
 
-				$contributor = $session->make_element( "datacite:contributor" );
+				$contributor = $session->render_data_element(
+					4,
+					"datacite:contributor",
+					"",
+					contributorType=>$contributor_type
+				);
 
 				# name
 				my $name_str = EPrints::Utils::make_name_string( $name->{name} );
 				$sub_content = $session->render_data_element (
 					4,
 					"datacite:contributorName",
-					$name_str,
-					contributorType=>$contributor_type
+					$name_str
 				);
 				$contributor->appendChild( $sub_content );
 
