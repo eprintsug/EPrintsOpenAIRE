@@ -681,9 +681,10 @@ sub xml_dataobj
 	elsif( $date ne "" )
 	{
 		#no embargo, so OA dates apply
-		$topcontent = $session->make_element( "datacite:date", "dateType" => "$mapped_dateType" );
-
-		$topcontent->appendChild( $session->make_text( $date ) );
+		$topcontent = $session->make_element( "datacite:dates" );
+		$sub_content = $session->make_element( "datacite:date", "dateType" => "$mapped_dateType" );
+		$sub_content->appendChild( $session->make_text( $date ) );
+		$topcontent->appendChild( $sub_content );
 
 		$response->appendChild( $topcontent );
 	}
