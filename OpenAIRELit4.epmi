@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<epm xmlns="http://eprints.org/ep2/data/2.0" id="http://localhost:8080/id/epm/OpenAIRELit4">
+<?xml version='1.0' encoding='utf-8'?>
+<epm xmlns='http://eprints.org/ep2/data/2.0' id='http://localhost:8080/id/epm/OpenAIRELit4'>
   <epmid>OpenAIRELit4</epmid>
-  <uri>https://spectrum.library.concordia.ca/id/epm/OpenAIRELit4</uri>
+  <uri>http://localhost:8080/id/epm/OpenAIRELit4</uri>
   <documents>
     <document>
       <files>
         <file>
           <datasetid>document</datasetid>
           <filename>epm/OpenAIRELit4/cfg/cfg.d/z_openaire.pl</filename>
-          <mime_type>application/x-perl</mime_type>
+          <mime_type>text/plain</mime_type>
           <hash>76d3c97dfe5ed2aa6dc8c21c00038302</hash>
           <hash_type>MD5</hash_type>
           <filesize>3158</filesize>
@@ -16,15 +16,15 @@
         <file>
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE.pm</filename>
-          <mime_type>application/x-perl</mime_type>
-          <hash>a57b1413f619e43459303b295af1b7ae</hash>
+          <mime_type>text/plain</mime_type>
+          <hash>adf25cbe1eff3573d2de739db51ee937</hash>
           <hash_type>MD5</hash_type>
-          <filesize>30674</filesize>
+          <filesize>30802</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/Export/OPENAIRE_via_PMH.pm</filename>
-          <mime_type>application/x-perl</mime_type>
+          <mime_type>text/plain</mime_type>
           <hash>ca5547a0a5c4f155249489bd01c82121</hash>
           <hash_type>MD5</hash_type>
           <filesize>2383</filesize>
@@ -53,14 +53,14 @@
       <id>https://orcid.org/0000-0002-8611-8266</id>
     </item>
   </creators>
+  <datestamp>2026-04-05 08:34:34</datestamp>
   <title>OpenAIRE Export Plugin - Literature Repository Guidelines</title>
   <description>Export Plugin for Interoperability with OpenAIRE.
 Exports metadata based on Guidelines for Literature Repositories by OpenAIRE (https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/).This plugin was developed as a part of Canadian Association of Research Libraries OpenAIRE Pilot Project.
-	  This version includes (i) export of contributors and editors, (ii) export of 'citation' fields, (iii) additional configuration options to allow additional metadata to be mapped, (iv) ability to exclude documents from the export.
+	  This version includes (i) export of contributors and editors, (ii) export of &apos;citation&apos; fields, (iii) additional configuration options to allow additional metadata to be mapped, (iv) ability to exclude documents from the export.
 	  For more details, see the README at https://github.com/eprintsug/EPrintsOpenAIRE/ </description>
   <requirements>To enable the plugin, the following lines are added in cfg/cfg.d/z_openaire.pl (included with the bazaar plugin)
 
-$c-&gt;{plugins}-&gt;{"Export::OPENAIRE"}-&gt;{params}-&gt;{disable} = 0;
-$c-&gt;{plugins}-&gt;{"Export::OPENAIRE_via_PMH"}-&gt;{params}-&gt;{disable} = 0;</requirements>
-  <datestamp>2026-04-05T08:34:34Z</datestamp>
+$c-&gt;{plugins}-&gt;{&quot;Export::OPENAIRE&quot;}-&gt;{params}-&gt;{disable} = 0;
+$c-&gt;{plugins}-&gt;{&quot;Export::OPENAIRE_via_PMH&quot;}-&gt;{params}-&gt;{disable} = 0;</requirements>
 </epm>

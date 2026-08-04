@@ -640,13 +640,15 @@ sub xml_dataobj
 		$mapped_dateType = ( exists $type_map_date{$dateType} ) ? $type_map_date{$dateType} : "";
 	}
 
+  #we always need to pass the top level 'dates' value to pass validation so define it here
+  $topcontent = $session->make_element( "datacite:dates" );
+
 	#if embargoed, always set the date available to embargo expiry date
 	if( $embargo_expiry_date ne "" )
 	{
 		#in some cases more than one date may be needed, specifically: when we have published date or accepted date (theses) and embargo expiry date
 		if( $mapped_dateType eq "Issued" )
 		{
-			$topcontent = $session->make_element( "datacite:dates" );
 			$sub_content = $session->make_element( "datacite:date", "dateType" => "Available" );
 			$sub_content->appendChild( $session->make_text( $embargo_expiry_date ) );
 			$topcontent->appendChild( $sub_content );
@@ -659,7 +661,6 @@ sub xml_dataobj
 		}
 		elsif( ( $mapped_dateType eq "Accepted" ) && ( $mapped_type eq "thesis" ) )
 		{
-			$topcontent = $session->make_element( "datacite:dates" );
 			$sub_content = $session->make_element( "datacite:date",	"dateType" => "Available" );
 			$sub_content->appendChild( $session->make_text( $embargo_expiry_date ) );
 			$topcontent->appendChild( $sub_content );
@@ -673,17 +674,19 @@ sub xml_dataobj
 		else
 		{
 			#when we have embargo expiry date and either submitted or completed date, only provide the embargo expiry date
-			$topcontent = $session->make_element( "datacite:date", "dateType" => "Available" );
-			$topcontent->appendChild( $session->make_text( $embargo_expiry_date ) );
+			$sub_content = $session->make_element( "datacite:date", "dateType" => "Available" );
+			$sub_content->appendChild( $session->make_text( $embargo_expiry_date ) );
+      $topcontent->appendChild( $sub_content );
 			$response->appendChild( $topcontent );
 		}
 	}
 	elsif( $date ne "" )
 	{
 		#no embargo, so OA dates apply
-		$topcontent = $session->make_element( "datacite:date", "dateType" => "$mapped_dateType" );
 
-		$topcontent->appendChild( $session->make_text( $date ) );
+		$sub_content = $session->make_element( "datacite:date", "dateType" => "$mapped_dateType" );
+		$sub_content->appendChild( $session->make_text( $date ) );
+    $topcontent->appendChild( $sub_content );
 
 		$response->appendChild( $topcontent );
 	}
