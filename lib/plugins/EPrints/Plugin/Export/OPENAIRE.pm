@@ -246,12 +246,7 @@ sub xml_dataobj
 			my $names = $dataobj->get_value( "editors" );
 			foreach my $name ( @$names )
 			{
-				$contributor = $session->render_data_element(
-					4,
-					"datacite:contributor",
-					"",
-					contributorType=>"Editor"
-				);
+				$contributor = $session->make_element( "datacite:contributor", "contributorType"=>"Editor" );
 
 				# name
 				my $name_str = EPrints::Utils::make_name_string( $name->{name} );
@@ -287,12 +282,7 @@ sub xml_dataobj
 					$contributor_type=$mapped_contributor_type;
 				}
 
-				$contributor = $session->render_data_element(
-					4,
-					"datacite:contributor",
-					"",
-					contributorType=>$contributor_type
-				);
+				$contributor = $session->make_element("datacite:contributor", "contributorType"=>$contributor_type );
 
 				# name
 				my $name_str = EPrints::Utils::make_name_string( $name->{name} );
