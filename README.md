@@ -1,4 +1,4 @@
-# EPrintsOpenAIRE - v1.1.0 (April 2026)
+# EPrintsOpenAIRE - v1.1.1 (September 2026)
 Export to OpenAIRE (Guidelines for Literature Repositories v4) from EPrints digital repository software.
 
 ## Bazaar Plugin
