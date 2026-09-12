@@ -110,4 +110,4 @@ This is where other oai-pmh configuration settings are, so this is where you wou
 
 
 ## Acknowledgements
-This was developed by Tomasz Neugebauer and initially hosted at https://github.com/photomedia/EPrintsOpenAIRE
+This was initially developed by Tomasz Neugebauer and hosted at https://github.com/photomedia/EPrintsOpenAIRE.  It has since been moved here to EPrintsUG and updated and maintained by members of the EPrints community.
