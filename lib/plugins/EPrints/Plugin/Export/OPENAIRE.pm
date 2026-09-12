@@ -275,11 +275,9 @@ sub xml_dataobj
 			foreach my $name ( @$names )
 			{
 				my $contributor_type = "Other";
-				$contributor_type = $name->{type};
 				if( defined $name->{type} && $name->{type} ne "" )
 				{
-					my $mapped_contributor_type = ( exists $relator_map{$contributor_type} ) ? $relator_map{$contributor_type} : "Other";
-					$contributor_type=$mapped_contributor_type;
+					$contributor_type = ( exists $relator_map{$name->{type}} ) ? $relator_map{$name->{type}} : "Other";
 				}
 
 				$contributor = $session->make_element("datacite:contributor", "contributorType"=>$contributor_type );
@@ -638,8 +636,11 @@ sub xml_dataobj
 		$mapped_dateType = ( exists $type_map_date{$dateType} ) ? $type_map_date{$dateType} : "";
 	}
 
-  #we always need to pass the top level 'dates' value to pass validation so define it here
-  $topcontent = $session->make_element( "datacite:dates" );
+	#every datacite:date must be wrapped in a datacite:dates container, so define it here and let each
+	#branch below append its date(s) to it and then append the container to the response.
+	#If neither an embargo expiry date nor a date is set, no branch runs and the container is
+	#discarded unused - this is fine, datacite:dates is minOccurs="0" in openaire.xsd.
+	$topcontent = $session->make_element( "datacite:dates" );
 
 	#if embargoed, always set the date available to embargo expiry date
 	if( $embargo_expiry_date ne "" )
@@ -674,7 +675,7 @@ sub xml_dataobj
 			#when we have embargo expiry date and either submitted or completed date, only provide the embargo expiry date
 			$sub_content = $session->make_element( "datacite:date", "dateType" => "Available" );
 			$sub_content->appendChild( $session->make_text( $embargo_expiry_date ) );
-      $topcontent->appendChild( $sub_content );
+			$topcontent->appendChild( $sub_content );
 			$response->appendChild( $topcontent );
 		}
 	}
@@ -684,7 +685,7 @@ sub xml_dataobj
 
 		$sub_content = $session->make_element( "datacite:date", "dateType" => "$mapped_dateType" );
 		$sub_content->appendChild( $session->make_text( $date ) );
-    $topcontent->appendChild( $sub_content );
+		$topcontent->appendChild( $sub_content );
 
 		$response->appendChild( $topcontent );
 	}
